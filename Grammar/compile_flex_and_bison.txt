@@ -1,0 +1,4 @@
+"C:\StudiaCd\Inżynierka\GameCompiler\Grammar\tools\bin\flex" -oLexer.c Lexer.l
+
+set PATH=C:\StudiaCd\Inżynierka\GameCompiler\Grammar\tools\bin;%PATH%
+bison -d Parser.y
