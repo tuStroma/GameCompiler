@@ -48,14 +48,14 @@
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union 
 /* Line 1676 of yacc.c  */
-#line 12 "Parser.y"
+#line 16 "Parser.y"
 symval
 {
 
 /* Line 1676 of yacc.c  */
-#line 12 "Parser.y"
+#line 16 "Parser.y"
 
-	int val;
+	struct SyntaxTree* t;
 
 
 

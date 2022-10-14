@@ -1,6 +1,7 @@
 %{
 
 #include "Parser.tab.h"
+#include "Common.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,8 +16,9 @@
 %%
 
 [0-9]+ {
-	int intval = atoi(yytext);
-	yylval.val = intval + 1;
+	SyntaxTree* st = SyntaxTree_init(Elem, yytext, 0);
+	yylval.t = st;
+	
 	return ELEM;
 }
 

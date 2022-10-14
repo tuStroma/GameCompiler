@@ -72,16 +72,20 @@
 
 
 #include <stdio.h>
+#include "Common.h"
 
 FILE *yyin;
 int yyerror();
+SyntaxTree* SyntaxTree_init(Type type, const char* text, int children);
 
 extern int yylex();
+
+SyntaxTree* root;
 
 
 
 /* Line 189 of yacc.c  */
-#line 85 "Parser.tab.c"
+#line 89 "Parser.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -117,19 +121,19 @@ extern int yylex();
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union 
 /* Line 214 of yacc.c  */
-#line 12 "Parser.y"
+#line 16 "Parser.y"
 symval
 {
 
 /* Line 214 of yacc.c  */
-#line 12 "Parser.y"
+#line 16 "Parser.y"
 
-	int val;
+	struct SyntaxTree* t;
 
 
 
 /* Line 214 of yacc.c  */
-#line 133 "Parser.tab.c"
+#line 137 "Parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -141,7 +145,7 @@ symval
 
 
 /* Line 264 of yacc.c  */
-#line 145 "Parser.tab.c"
+#line 149 "Parser.tab.c"
 
 #ifdef short
 # undef short
@@ -422,7 +426,7 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    28
+       0,    26,    26,    36
 };
 #endif
 
@@ -1317,32 +1321,38 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 22 "Parser.y"
+#line 26 "Parser.y"
     {
-	int test = (yyval.val);
-	(yyval.val) = (yyvsp[(1) - (1)].val);
-	int val = (yyvsp[(1) - (1)].val);
-	printf("%d\n", val);
+	SyntaxTree* st = SyntaxTree_init(List, "", 1);
+	yylval.t = st;
+	
+	st->children[0] = (yyvsp[(1) - (1)].t);
+	
+	(yyval.t) = st;
+	root = st;
 ;}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 28 "Parser.y"
+#line 36 "Parser.y"
     {
-	int test = (yyval.val);
-	(yyval.val) = (yyvsp[(1) - (2)].val);
-	int val1 = (yyvsp[(1) - (2)].val);
-	int val2 = (yyvsp[(2) - (2)].val);
-	printf("%d\n", val2);
+	SyntaxTree* st = SyntaxTree_init(List, "", 2);
+	yylval.t = st;
+	
+	st->children[0] = (yyvsp[(1) - (2)].t);
+	st->children[1] = (yyvsp[(2) - (2)].t);
+	
+	(yyval.t) = st;
+	root = st;
 ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1346 "Parser.tab.c"
+#line 1356 "Parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1554,10 +1564,10 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 36 "Parser.y"
+#line 47 "Parser.y"
 
 
-int parser_main(int argc, char *argv[])
+SyntaxTree* parser_main(int argc, char *argv[])
 {
 	FILE *fp = NULL;
 	if (argc == 2)
@@ -1567,7 +1577,7 @@ int parser_main(int argc, char *argv[])
 		if (fp == NULL)
 		{
 			perror("Failed to open file");
-			return -1;
+			return NULL;
 		}
 		else
 		{
@@ -1582,12 +1592,29 @@ int parser_main(int argc, char *argv[])
 		fclose(fp);
 	}
 
-	return 0;
+	return root;
 }
 
 int yyerror(const char *p) {
 
 	printf("%s\n", p);
 	return 0;
+}
+
+SyntaxTree* SyntaxTree_init(Type type, const char* text, int children)
+{
+	SyntaxTree* st = (SyntaxTree*)malloc(sizeof(SyntaxTree));
+	if (st == NULL) { printf("Memry allocation error\n"); exit(-1); }
+
+	st->children =(SyntaxTree**) malloc(sizeof(SyntaxTree) * children);
+	if (st->children == NULL) { printf("Memry allocation error\n"); exit(-1); }
+
+	st->type = type;
+	st->children_num = children;
+	
+	st->text = calloc(strlen(text) + 1, 1);
+	strcpy_s(st->text, strlen(text) + 1, text);
+
+	return st;
 }
 

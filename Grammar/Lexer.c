@@ -366,6 +366,7 @@ char *yytext;
 #line 2 "Lexer.l"
 
 #include "Parser.tab.h"
+#include "Common.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -373,7 +374,7 @@ char *yytext;
 
 #define fileno _fileno
 
-#line 377 "Lexer.c"
+#line 378 "Lexer.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -524,10 +525,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 15 "Lexer.l"
+#line 16 "Lexer.l"
 
 
-#line 531 "Lexer.c"
+#line 532 "Lexer.c"
 
 	if ( yy_init )
 		{
@@ -612,24 +613,25 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 17 "Lexer.l"
+#line 18 "Lexer.l"
 {
-	int intval = atoi(yytext);
-	yylval.val = intval + 1;
+	SyntaxTree* st = SyntaxTree_init(Elem, yytext, 0);
+	yylval.t = st;
+	
 	return ELEM;
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 23 "Lexer.l"
+#line 25 "Lexer.l"
 { }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 25 "Lexer.l"
+#line 27 "Lexer.l"
 ECHO;
 	YY_BREAK
-#line 633 "Lexer.c"
+#line 635 "Lexer.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1515,5 +1517,5 @@ int main()
 	return 0;
 	}
 #endif
-#line 25 "Lexer.l"
+#line 27 "Lexer.l"
 

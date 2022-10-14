@@ -1,41 +1,52 @@
 %{
 
 #include <stdio.h>
+#include "Common.h"
 
 FILE *yyin;
 int yyerror();
+SyntaxTree* SyntaxTree_init(Type type, const char* text, int children);
 
 extern int yylex();
+
+SyntaxTree* root;
 
 %}
 
 %union symval {
-	int val;
+	struct SyntaxTree* t;
 };
 
-%token <val> ELEM
-%type <val> LIST
+%token <t> ELEM
+%type <t> LIST
+
 
 %%
 
-LIST: ELEM
-{
-	int test = $$;
-	$$ = $1;
-	int val = $1;
-	printf("%d\n", val);
+LIST: ELEM {
+	SyntaxTree* st = SyntaxTree_init(List, "", 1);
+	yylval.t = st;
+	
+	st->children[0] = $1;
+	
+	$$ = st;
+	root = st;
 }
+
 | LIST ELEM {
-	int test = $$;
-	$$ = $1;
-	int val1 = $1;
-	int val2 = $2;
-	printf("%d\n", val2);
+	SyntaxTree* st = SyntaxTree_init(List, "", 2);
+	yylval.t = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+	
+	$$ = st;
+	root = st;
 }
 
 %%
 
-int parser_main(int argc, char *argv[])
+SyntaxTree* parser_main(int argc, char *argv[])
 {
 	FILE *fp = NULL;
 	if (argc == 2)
@@ -45,7 +56,7 @@ int parser_main(int argc, char *argv[])
 		if (fp == NULL)
 		{
 			perror("Failed to open file");
-			return -1;
+			return NULL;
 		}
 		else
 		{
@@ -60,11 +71,28 @@ int parser_main(int argc, char *argv[])
 		fclose(fp);
 	}
 
-	return 0;
+	return root;
 }
 
 int yyerror(const char *p) {
 
 	printf("%s\n", p);
 	return 0;
+}
+
+SyntaxTree* SyntaxTree_init(Type type, const char* text, int children)
+{
+	SyntaxTree* st = (SyntaxTree*)malloc(sizeof(SyntaxTree));
+	if (st == NULL) { printf("Memry allocation error\n"); exit(-1); }
+
+	st->children =(SyntaxTree**) malloc(sizeof(SyntaxTree) * children);
+	if (st->children == NULL) { printf("Memry allocation error\n"); exit(-1); }
+
+	st->type = type;
+	st->children_num = children;
+	
+	st->text = calloc(strlen(text) + 1, 1);
+	strcpy_s(st->text, strlen(text) + 1, text);
+
+	return st;
 }

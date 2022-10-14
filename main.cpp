@@ -1,10 +1,18 @@
 #include <iostream>
-extern "C" int parser_main(int argc, char* argv[]);
+#include "Grammar/Common.h"
+#include "Grammar/Parser.tab.h"
+extern "C" SyntaxTree* parser_main(int argc, char* argv[]);
+
 
 int main(int argc, char* argv[])
 {
 	char* tab[2];
 	char str[20] = "Source/source.txt";
 	tab[1] = str;
-	return parser_main(2, tab);
+	SyntaxTree* st = parser_main(2, tab);
+	SyntaxTree_print(st, 0);
+
+	yytokentype::ELEM;
+
+	return 0;
 }
