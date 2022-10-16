@@ -12,7 +12,6 @@ int main(int argc, char* argv[])
 	SyntaxTree* st = parser_main(2, tab);
 	SyntaxTree_print(st, 0);
 
-	//yytokentype::ELEM;
 
 	return 0;
 }

@@ -15,42 +15,76 @@
 
 %%
 
+
+STATE {
+	yylval.t = SyntaxTree_init(kw_state, yytext, 0);
+	
+	return KW_STATE;
+}
+
+INT {
+	yylval.t = SyntaxTree_init(kw_int, yytext, 0);
+	
+	return KW_INT;
+}
+
+BOOL {
+	yylval.t = SyntaxTree_init(kw_bool, yytext, 0);
+	
+	return KW_BOOL;
+}
+
+
+
+[0-9]+ {
+	yylval.t = SyntaxTree_init(integer, yytext, 0);
+	
+	return INTEGER;
+}
+
+
+(true)|(false) {
+	yylval.t = SyntaxTree_init(boolean, yytext, 0);
+	
+	return BOOLEAN;
+}
+
+
+TMP_MAIN_RULE {
+	yylval.t = SyntaxTree_init(main_rule, yytext, 0);
+	
+	return TMP_MAIN_RULE;
+}
+
+TMP_STATE {
+	yylval.t = SyntaxTree_init(state, yytext, 0);
+	
+	return TMP_STATE;
+}
+
+TMP_MOVES {
+	yylval.t = SyntaxTree_init(state, yytext, 0);
+	
+	return TMP_MOVES;
+}
+
+
+
+
 [a-zA-Z_][a-zA-Z0-9_]* {
-	yylval.t = SyntaxTree_init(id, yytext, 0);
-	//yylval.t = st;
+	yylval.t = SyntaxTree_init(identifier, yytext, 0);
 	
-	return ID;
-}
-
-\+ {
-	SyntaxTree* st = SyntaxTree_init(op_add, yytext, 0);
-	yylval.t = st;
-	
-	return '+';
-}
-
-\* {
-	SyntaxTree* st = SyntaxTree_init(op_mul, yytext, 0);
-	yylval.t = st;
-	
-	return '*';
-}
-
-\( {
-	SyntaxTree* st = SyntaxTree_init(open, yytext, 0);
-	yylval.t = st;
-	
-	return '(';
-}
-
-\) {
-	SyntaxTree* st = SyntaxTree_init(close, yytext, 0);
-	yylval.t = st;
-	
-	return ')';
+	return IDENTIFIER;
 }
 
 
-. { }
+[\[\];=] {
+	yylval.t = SyntaxTree_init(syntax_char, yytext, 0);
+	
+	return yytext[0];
+}
+
+
+[ \t\n] { }
 
 %%

@@ -19,60 +19,109 @@ SyntaxTree* root;
 
 
 
-%token <t> ID '(' ')'
-%type <t> EXPR
+%token <t> 	TMP_MAIN_RULE TMP_STATE TMP_MOVES KW_STATE KW_INT KW_BOOL IDENTIFIER INTEGER BOOLEAN
 
-%left<t> '+' 
-%left<t> '*'
+%type <t> 	GAME MAIN_RULE STATE MOVES
+			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
+
+%start GAME
 
 
 %%
 
-EXPR: ID {
-	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
-	yylval.t = st;
-	
-	st->children[0] = $1;
-	
-	$$ = st;
+GAME: MAIN_RULE STATE MOVES {
+	SyntaxTree* st = SyntaxTree_init(game, "", 3);
 	root = st;
-}
-
-| '(' EXPR ')' {
-	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
-	yylval.t = st;
 	
 	st->children[0] = $1;
 	st->children[1] = $2;
 	st->children[2] = $3;
-	
-	$$ = st;
-	root = st;
 }
 
-| EXPR '+' EXPR {
-	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
-	yylval.t = st;
+
+// Main components
+
+MAIN_RULE: TMP_MAIN_RULE {
+	SyntaxTree* st = SyntaxTree_init(main_rule, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
+STATE: KW_STATE '[' DATA_SET ']' {
+	SyntaxTree* st = SyntaxTree_init(state, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+MOVES: TMP_MOVES {
+	SyntaxTree* st = SyntaxTree_init(moves, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
+
+// Data
+
+DATA_SET: VAR_LIST {
+	SyntaxTree* st = SyntaxTree_init(data_set, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
+VAR_LIST: VAR_DECLARATION {
+	SyntaxTree* st = SyntaxTree_init(var_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| VAR_DECLARATION VAR_LIST {
+	SyntaxTree* st = SyntaxTree_init(var_list, "", 2);
+	$$ = st;
 	
 	st->children[0] = $1;
 	st->children[1] = $2;
-	st->children[2] = $3;
-	
-	$$ = st;
-	root = st;
 }
 
-| EXPR '*' EXPR {
-	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
-	yylval.t = st;
+VAR_DECLARATION: VAR_TYPE IDENTIFIER '=' VAR_DEFINITION ';' {
+	SyntaxTree* st = SyntaxTree_init(var_declaration, "", 3);
+	$$ = st;
 	
 	st->children[0] = $1;
 	st->children[1] = $2;
-	st->children[2] = $3;
-	
-	$$ = st;
-	root = st;
+	st->children[2] = $4;
 }
+
+VAR_TYPE: KW_INT {
+	SyntaxTree* st = SyntaxTree_init(var_type, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| KW_BOOL {
+	SyntaxTree* st = SyntaxTree_init(var_type, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+	
+VAR_DEFINITION: INTEGER {
+	SyntaxTree* st = SyntaxTree_init(var_definition, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| BOOLEAN {
+	SyntaxTree* st = SyntaxTree_init(var_definition, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
 
 %%
 

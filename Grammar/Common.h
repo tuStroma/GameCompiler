@@ -7,13 +7,10 @@
 
 typedef enum Type
 {
-	id,
-	op_add,
-	op_mul,
-	open,
-	close,
+	tmp_main_rule, tmp_state, tmp_moves, kw_state, kw_int, kw_bool, identifier, integer, boolean, syntax_char,
 
-	expr
+	game, main_rule, state, moves,
+	data_set, var_list, var_declaration, var_type, var_definition
 } Type;
 
 

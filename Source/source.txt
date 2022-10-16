@@ -1,1 +1,9 @@
-a + ( a * d) * b
+TMP_MAIN_RULE
+
+STATE 
+[
+	INT a = 1;
+	BOOL b = false;
+]
+
+TMP_MOVES
