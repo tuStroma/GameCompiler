@@ -17,14 +17,19 @@ SyntaxTree* root;
 	struct SyntaxTree* t;
 };
 
-%token <t> ELEM
-%type <t> LIST
+
+
+%token <t> ID '(' ')'
+%type <t> EXPR
+
+%left<t> '+' 
+%left<t> '*'
 
 
 %%
 
-LIST: ELEM {
-	SyntaxTree* st = SyntaxTree_init(List, "", 1);
+EXPR: ID {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
 	yylval.t = st;
 	
 	st->children[0] = $1;
@@ -33,12 +38,37 @@ LIST: ELEM {
 	root = st;
 }
 
-| LIST ELEM {
-	SyntaxTree* st = SyntaxTree_init(List, "", 2);
+| '(' EXPR ')' {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
 	yylval.t = st;
 	
 	st->children[0] = $1;
 	st->children[1] = $2;
+	st->children[2] = $3;
+	
+	$$ = st;
+	root = st;
+}
+
+| EXPR '+' EXPR {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
+	yylval.t = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+	st->children[2] = $3;
+	
+	$$ = st;
+	root = st;
+}
+
+| EXPR '*' EXPR {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
+	yylval.t = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+	st->children[2] = $3;
 	
 	$$ = st;
 	root = st;

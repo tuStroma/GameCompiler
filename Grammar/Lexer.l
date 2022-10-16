@@ -15,12 +15,41 @@
 
 %%
 
-[0-9]+ {
-	SyntaxTree* st = SyntaxTree_init(Elem, yytext, 0);
+[a-zA-Z_][a-zA-Z0-9_]* {
+	yylval.t = SyntaxTree_init(id, yytext, 0);
+	//yylval.t = st;
+	
+	return ID;
+}
+
+\+ {
+	SyntaxTree* st = SyntaxTree_init(op_add, yytext, 0);
 	yylval.t = st;
 	
-	return ELEM;
+	return '+';
 }
+
+\* {
+	SyntaxTree* st = SyntaxTree_init(op_mul, yytext, 0);
+	yylval.t = st;
+	
+	return '*';
+}
+
+\( {
+	SyntaxTree* st = SyntaxTree_init(open, yytext, 0);
+	yylval.t = st;
+	
+	return '(';
+}
+
+\) {
+	SyntaxTree* st = SyntaxTree_init(close, yytext, 0);
+	yylval.t = st;
+	
+	return ')';
+}
+
 
 . { }
 

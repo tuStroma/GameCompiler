@@ -7,8 +7,13 @@
 
 typedef enum Type
 {
-	Elem,
-	List
+	id,
+	op_add,
+	op_mul,
+	open,
+	close,
+
+	expr
 } Type;
 
 

@@ -112,7 +112,7 @@ SyntaxTree* root;
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     ELEM = 258
+     ID = 258
    };
 #endif
 
@@ -358,18 +358,18 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  3
+#define YYFINAL  5
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   3
+#define YYLAST   11
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  4
+#define YYNTOKENS  8
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  3
+#define YYNRULES  5
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  5
+#define YYNSTATES  11
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -385,7 +385,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       4,     5,     7,     6,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -414,19 +414,20 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     5
+       0,     0,     3,     5,     9,    13
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-       5,     0,    -1,     3,    -1,     5,     3,    -1
+       9,     0,    -1,     3,    -1,     4,     9,     5,    -1,     9,
+       6,     9,    -1,     9,     7,     9,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    26,    26,    36
+       0,    31,    31,    41,    53,    65
 };
 #endif
 
@@ -435,7 +436,8 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "ELEM", "$accept", "LIST", 0
+  "$end", "error", "$undefined", "ID", "'('", "')'", "'+'", "'*'",
+  "$accept", "EXPR", 0
 };
 #endif
 
@@ -444,20 +446,20 @@ static const char *const yytname[] =
    token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258
+       0,   256,   257,   258,    40,    41,    43,    42
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     4,     5,     5
+       0,     8,     9,     9,     9,     9
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     1,     2
+       0,     2,     1,     3,     3,     3
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -465,27 +467,29 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     2,     0,     1,     3
+       0,     2,     0,     0,     0,     1,     0,     0,     3,     4,
+       5
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2
+      -1,     3
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -3
+#define YYPACT_NINF -5
 static const yytype_int8 yypact[] =
 {
-      -2,    -3,     0,    -3,    -3
+       7,    -5,     7,     0,    -4,    -5,     7,     7,    -5,    -2,
+      -5
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -3,    -3
+      -5,     2
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -495,19 +499,22 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       3,     1,     0,     4
+       5,     8,     6,     7,     4,     7,     6,     7,     9,    10,
+       1,     2
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-       0,     3,    -1,     3
+       0,     5,     6,     7,     2,     7,     6,     7,     6,     7,
+       3,     4
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     5,     0,     3
+       0,     3,     4,     9,     9,     0,     6,     7,     5,     9,
+       9
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1321,9 +1328,9 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 26 "Parser.y"
+#line 31 "Parser.y"
     {
-	SyntaxTree* st = SyntaxTree_init(List, "", 1);
+	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
 	yylval.t = st;
 	
 	st->children[0] = (yyvsp[(1) - (1)].t);
@@ -1336,13 +1343,48 @@ yyreduce:
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 36 "Parser.y"
+#line 41 "Parser.y"
     {
-	SyntaxTree* st = SyntaxTree_init(List, "", 2);
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
 	yylval.t = st;
 	
-	st->children[0] = (yyvsp[(1) - (2)].t);
-	st->children[1] = (yyvsp[(2) - (2)].t);
+	st->children[0] = (yyvsp[(1) - (3)].t);
+	st->children[1] = (yyvsp[(2) - (3)].t);
+	st->children[2] = (yyvsp[(3) - (3)].t);
+	
+	(yyval.t) = st;
+	root = st;
+;}
+    break;
+
+  case 4:
+
+/* Line 1455 of yacc.c  */
+#line 53 "Parser.y"
+    {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
+	yylval.t = st;
+	
+	st->children[0] = (yyvsp[(1) - (3)].t);
+	st->children[1] = (yyvsp[(2) - (3)].t);
+	st->children[2] = (yyvsp[(3) - (3)].t);
+	
+	(yyval.t) = st;
+	root = st;
+;}
+    break;
+
+  case 5:
+
+/* Line 1455 of yacc.c  */
+#line 65 "Parser.y"
+    {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 3);
+	yylval.t = st;
+	
+	st->children[0] = (yyvsp[(1) - (3)].t);
+	st->children[1] = (yyvsp[(2) - (3)].t);
+	st->children[2] = (yyvsp[(3) - (3)].t);
 	
 	(yyval.t) = st;
 	root = st;
@@ -1352,7 +1394,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1356 "Parser.tab.c"
+#line 1398 "Parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1564,7 +1606,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 47 "Parser.y"
+#line 77 "Parser.y"
 
 
 SyntaxTree* parser_main(int argc, char *argv[])
