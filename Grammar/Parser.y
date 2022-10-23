@@ -49,11 +49,10 @@ MAIN_RULE: TMP_MAIN_RULE {
 }
 
 STATE: KW_STATE '[' DATA_SET ']' {
-	SyntaxTree* st = SyntaxTree_init(state, "", 2);
+	SyntaxTree* st = SyntaxTree_init(state, "", 1);
 	$$ = st;
 	
-	st->children[0] = $1;
-	st->children[1] = $3;
+	st->children[0] = $3;
 }
 
 MOVES: TMP_MOVES {

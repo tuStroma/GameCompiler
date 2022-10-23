@@ -439,8 +439,8 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    44,    51,    59,    69,    76,    82,    90,
-      99,   105,   112,   118
+       0,    32,    32,    44,    51,    58,    68,    75,    81,    89,
+      98,   104,   111,   117
 };
 #endif
 
@@ -1378,18 +1378,17 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 51 "Parser.y"
     {
-	SyntaxTree* st = SyntaxTree_init(state, "", 2);
+	SyntaxTree* st = SyntaxTree_init(state, "", 1);
 	(yyval.t) = st;
 	
-	st->children[0] = (yyvsp[(1) - (4)].t);
-	st->children[1] = (yyvsp[(3) - (4)].t);
+	st->children[0] = (yyvsp[(3) - (4)].t);
 ;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 59 "Parser.y"
+#line 58 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(moves, "", 1);
 	(yyval.t) = st;
@@ -1401,7 +1400,7 @@ yyreduce:
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 69 "Parser.y"
+#line 68 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(data_set, "", 1);
 	(yyval.t) = st;
@@ -1413,7 +1412,7 @@ yyreduce:
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 76 "Parser.y"
+#line 75 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_list, "", 1);
 	(yyval.t) = st;
@@ -1425,7 +1424,7 @@ yyreduce:
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 82 "Parser.y"
+#line 81 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_list, "", 2);
 	(yyval.t) = st;
@@ -1438,7 +1437,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 90 "Parser.y"
+#line 89 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_declaration, "", 3);
 	(yyval.t) = st;
@@ -1452,7 +1451,7 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 99 "Parser.y"
+#line 98 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_type, "", 1);
 	(yyval.t) = st;
@@ -1464,7 +1463,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 105 "Parser.y"
+#line 104 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_type, "", 1);
 	(yyval.t) = st;
@@ -1476,7 +1475,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 112 "Parser.y"
+#line 111 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_definition, "", 1);
 	(yyval.t) = st;
@@ -1488,7 +1487,7 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 118 "Parser.y"
+#line 117 "Parser.y"
     {
 	SyntaxTree* st = SyntaxTree_init(var_definition, "", 1);
 	(yyval.t) = st;
@@ -1500,7 +1499,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1504 "Parser.tab.c"
+#line 1503 "Parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1712,7 +1711,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 126 "Parser.y"
+#line 125 "Parser.y"
 
 
 SyntaxTree* parser_main(int argc, char *argv[])
