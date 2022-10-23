@@ -22,7 +22,7 @@ bool DataSet::exist(std::string name)
 	return map.find(name) != map.end();
 }
 
-bool DataSet::defineVariable(std::string name, int size)
+bool DataSet::defineVariable(std::string name, VAR_TYPE type, int size)
 {
 	if (bits_taken + size > data_size)
 		return false;
@@ -30,7 +30,7 @@ bool DataSet::defineVariable(std::string name, int size)
 	if (exist(name))
 		return false;
 
-	map[name] = bits_taken;
+	map[name] = variable(bits_taken, type);
 	bits_taken += size;
 
 	return true;
@@ -44,6 +44,17 @@ void* DataSet::getValuePtr(std::string name)
 		return nullptr;
 	}
 
-	int data_index = map.at(name);
+	int data_index = map.at(name).pointer;
 	return (char*)data + data_index;
+}
+
+void DataSet::print()
+{
+	for (std::pair<const std::string, variable>& kv : map)
+	{
+		const std::string& name = kv.first;
+		variable& var = kv.second;
+
+		std::cout << VarTypeToString(var.type) << ' ' << name << ' ' << getStringValue(getValuePtr(name), var.type) << '\n';
+	}
 }

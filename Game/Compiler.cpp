@@ -68,16 +68,6 @@ std::string Compiler::get_value_from_VAR_DECLARATION(SyntaxTree* var_declaration
 
 // Data functions
 
-int Compiler::getTypeSize(std::string type)
-{
-	if (type == "INT")			return sizeof(int);
-	else if (type == "BOOL")	return sizeof(bool);
-
-	else	std::cout << "Error: unknown type:\t" << type << '\n';
-
-	return 0;
-}
-
 void Compiler::setVariable(DataSet* data_set, std::string type, std::string name, std::string value)
 {
 
@@ -104,6 +94,7 @@ void Compiler::setVariable(DataSet* data_set, std::string type, std::string name
 Game* Compiler::createGame(SyntaxTree* input_game)
 {
 	DataSet* state = createDataSet(get_STATE_from_GAME(input_game));
+
 	Game* game = new Game(state);
 	return game;
 }
@@ -138,11 +129,12 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_state)
 	for (SyntaxTree* var : declaration_list)
 	{
 		std::string type = get_type_from_VAR_DECLARATION(var);
+		VAR_TYPE var_type = stringToVarType(type);
 		std::string name = get_identifier_from_VAR_DECLARATION(var);
 		std::string value = get_value_from_VAR_DECLARATION(var);
 
 		int var_size = getTypeSize(type);
-		data_set->defineVariable(name, var_size);
+		data_set->defineVariable(name, var_type, var_size);
 
 		setVariable(data_set, type, name, value);
 

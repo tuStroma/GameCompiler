@@ -32,9 +32,9 @@ void DataSet_test()
 
 	DataSet* ds = new DataSet(size);
 
-	ds->defineVariable("b", sizeof(bool));
-	ds->defineVariable("i", sizeof(int));
-	ds->defineVariable("d", sizeof(double));
+	ds->defineVariable("b", VAR_TYPE::UNKNOWN, sizeof(bool));
+	ds->defineVariable("i", VAR_TYPE::UNKNOWN, sizeof(int));
+	ds->defineVariable("d", VAR_TYPE::UNKNOWN, sizeof(double));
 
 	*(bool*)(ds->getValuePtr("b")) = true;
 	*(int*)(ds->getValuePtr("i")) = 7;

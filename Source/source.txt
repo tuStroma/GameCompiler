@@ -4,6 +4,7 @@ STATE
 [
 	INT a = 1;
 	BOOL b = false;
+	INT c = 5;
 ]
 
 TMP_MOVES

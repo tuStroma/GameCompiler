@@ -27,7 +27,6 @@ private:
 
 	// Data functions
 
-	int getTypeSize(std::string type);
 	void setVariable(DataSet* data_set, std::string type, std::string name, std::string value);
 
 
