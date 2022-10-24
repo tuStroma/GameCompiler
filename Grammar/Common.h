@@ -7,9 +7,9 @@
 
 typedef enum Type
 {
-	tmp_main_rule, tmp_state, tmp_moves, kw_state, kw_int, kw_bool, identifier, integer, boolean, syntax_char,
+	tmp_main_rule, tmp_state, tmp_moves, kw_players, tmp_players_list, kw_state, kw_int, kw_bool, identifier, integer, boolean, syntax_char,
 
-	game, main_rule, state, moves,
+	game, main_rule, players, players_list, player, state, moves,
 	data_set, var_list, var_declaration, var_type, var_definition
 } Type;
 

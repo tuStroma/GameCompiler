@@ -1,5 +1,11 @@
 TMP_MAIN_RULE
 
+PLAYERS
+[
+	players[4];
+	masters[2];
+]
+
 STATE 
 [
 	INT a = 1;

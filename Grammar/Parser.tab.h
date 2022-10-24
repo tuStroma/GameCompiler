@@ -42,12 +42,13 @@
      TMP_MAIN_RULE = 258,
      TMP_STATE = 259,
      TMP_MOVES = 260,
-     KW_STATE = 261,
-     KW_INT = 262,
-     KW_BOOL = 263,
-     IDENTIFIER = 264,
-     INTEGER = 265,
-     BOOLEAN = 266
+     KW_PLAYERS = 261,
+     KW_STATE = 262,
+     KW_INT = 263,
+     KW_BOOL = 264,
+     IDENTIFIER = 265,
+     INTEGER = 266,
+     BOOLEAN = 267
    };
 #endif
 
@@ -68,7 +69,7 @@ symval
 
 
 /* Line 1676 of yacc.c  */
-#line 72 "Parser.tab.h"
+#line 73 "Parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

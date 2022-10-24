@@ -30,7 +30,7 @@ SyntaxTree* Compiler::extract(SyntaxTree* ptr, int index, std::string warning)
 
 SyntaxTree* Compiler::get_STATE_from_GAME(SyntaxTree* game)
 {
-	return extract(game, 1, "STATE from GAME");
+	return extract(game, 2, "STATE from GAME");
 }
 SyntaxTree* Compiler::get_DATA_SET_from_STATE(SyntaxTree* state)
 {
@@ -70,8 +70,6 @@ std::string Compiler::get_value_from_VAR_DECLARATION(SyntaxTree* var_declaration
 
 void Compiler::setVariable(DataSet* data_set, std::string type, std::string name, std::string value)
 {
-
-	std::cout << type << ' ' << name << ' ' << value << '\n';
 	if (type == "INT")
 	{
 		int val = std::stoi(value);
@@ -94,6 +92,8 @@ void Compiler::setVariable(DataSet* data_set, std::string type, std::string name
 Game* Compiler::createGame(SyntaxTree* input_game)
 {
 	DataSet* state = createDataSet(get_STATE_from_GAME(input_game));
+
+	state->print();
 
 	Game* game = new Game(state);
 	return game;

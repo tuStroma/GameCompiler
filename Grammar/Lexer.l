@@ -16,6 +16,12 @@
 %%
 
 
+PLAYERS {
+	yylval.t = SyntaxTree_init(kw_players, yytext, 0);
+	
+	return KW_PLAYERS;
+}
+
 STATE {
 	yylval.t = SyntaxTree_init(kw_state, yytext, 0);
 	
