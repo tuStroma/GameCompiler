@@ -19,22 +19,27 @@ SyntaxTree* root;
 
 
 
-%token <t> 	TMP_MAIN_RULE TMP_STATE TMP_MOVES 
+%token <t> 	KW_MAIN_RULE TMP_STATE TMP_MOVES 
 			
 			KW_PLAYERS
 			KW_STATE KW_INT KW_BOOL 
-			IDENTIFIER INTEGER BOOLEAN
+			IDENTIFIER INTEGER BOOLEAN 
+			INSTRUCTION
+			TMP
 
 %type <t> 	GAME MAIN_RULE PLAYERS STATE MOVES
 			PLAYERS_LIST PLAYER
 			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
+			INSTRUCTION_BLOCK INSTRUCTION_LIST
+			M_RULE_LIST M_RULE
+			PAYOFF_LIST PAYOFF
 
 %start GAME
 
 
 %%
 
-GAME: MAIN_RULE PLAYERS STATE MOVES {
+GAME: PLAYERS STATE MAIN_RULE MOVES {
 	SyntaxTree* st = SyntaxTree_init(game, "", 4);
 	root = st;
 	
@@ -46,13 +51,6 @@ GAME: MAIN_RULE PLAYERS STATE MOVES {
 
 
 // Main components
-
-MAIN_RULE: TMP_MAIN_RULE {
-	SyntaxTree* st = SyntaxTree_init(main_rule, "", 1);
-	$$ = st;
-	
-	st->children[0] = $1;
-}
 
 PLAYERS: KW_PLAYERS '[' PLAYERS_LIST ']'{
 	SyntaxTree* st = SyntaxTree_init(players, "", 1);
@@ -66,6 +64,13 @@ STATE: KW_STATE DATA_SET {
 	$$ = st;
 	
 	st->children[0] = $2;
+}
+
+MAIN_RULE: KW_MAIN_RULE '[' M_RULE_LIST ']' {
+	SyntaxTree* st = SyntaxTree_init(main_rule, "", 1);
+	$$ = st;
+	
+	st->children[0] = $3;
 }
 
 MOVES: TMP_MOVES {
@@ -159,6 +164,92 @@ VAR_DEFINITION: INTEGER {
 	st->children[0] = $1;
 }
 
+
+// INSTRUCTIONS
+
+INSTRUCTION_BLOCK: '{' INSTRUCTION_LIST '}' {
+	SyntaxTree* st = SyntaxTree_init(instruction_block, "", 1);
+	$$ = st;
+	
+	st->children[0] = $2;
+}
+|DATA_SET '{' INSTRUCTION_LIST '}' {
+	SyntaxTree* st = SyntaxTree_init(instruction_block, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+INSTRUCTION_LIST: INSTRUCTION {
+	SyntaxTree* st = SyntaxTree_init(instruction_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| INSTRUCTION INSTRUCTION_LIST {
+	SyntaxTree* st = SyntaxTree_init(instruction_list, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+}
+
+//INSTRUCTION: {}
+
+
+// MAIN_RULE
+
+M_RULE_LIST: M_RULE {
+	SyntaxTree* st = SyntaxTree_init(m_rule_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| M_RULE ';' M_RULE_LIST {
+	SyntaxTree* st = SyntaxTree_init(m_rule_list, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+
+M_RULE: IDENTIFIER INSTRUCTION_BLOCK PAYOFF_LIST {
+	SyntaxTree* st = SyntaxTree_init(m_rule, "", 3);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+	st->children[2] = $3;
+}
+
+
+PAYOFF_LIST: PAYOFF {
+	SyntaxTree* st = SyntaxTree_init(payoff_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| PAYOFF PAYOFF_LIST {
+	SyntaxTree* st = SyntaxTree_init(payoff_list, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+}
+
+PAYOFF: IDENTIFIER INSTRUCTION_BLOCK{
+	SyntaxTree* st = SyntaxTree_init(payoff, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+}
+
+
+
+// TMP { SyntaxTree* st = SyntaxTree_init(tmp, "", 1); $$ = st; st->children[0] = $1; }
 
 %%
 

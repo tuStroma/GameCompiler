@@ -1,5 +1,3 @@
-TMP_MAIN_RULE
-
 PLAYERS
 [
 	players[4];
@@ -11,6 +9,16 @@ STATE
 	INT a = 1;
 	BOOL b = false;
 	INT c = 5;
+]
+
+MAIN_RULE
+[
+	r1
+	{ TMP_INSTRUCTION } 
+	players
+	{TMP_INSTRUCTION}
+	masters
+	{TMP_INSTRUCTION TMP_INSTRUCTION}
 ]
 
 TMP_MOVES

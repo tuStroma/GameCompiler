@@ -39,7 +39,7 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     TMP_MAIN_RULE = 258,
+     KW_MAIN_RULE = 258,
      TMP_STATE = 259,
      TMP_MOVES = 260,
      KW_PLAYERS = 261,
@@ -48,7 +48,9 @@
      KW_BOOL = 264,
      IDENTIFIER = 265,
      INTEGER = 266,
-     BOOLEAN = 267
+     BOOLEAN = 267,
+     INSTRUCTION = 268,
+     TMP = 269
    };
 #endif
 
@@ -69,7 +71,7 @@ symval
 
 
 /* Line 1676 of yacc.c  */
-#line 73 "Parser.tab.h"
+#line 75 "Parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

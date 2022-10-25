@@ -30,7 +30,7 @@ SyntaxTree* Compiler::extract(SyntaxTree* ptr, int index, std::string warning)
 
 SyntaxTree* Compiler::get_STATE_from_GAME(SyntaxTree* game)
 {
-	return extract(game, 2, "STATE from GAME");
+	return extract(game, 1, "STATE from GAME");
 }
 SyntaxTree* Compiler::get_DATA_SET_from_STATE(SyntaxTree* state)
 {
