@@ -19,7 +19,7 @@ SyntaxTree* root;
 
 
 
-%token <t> 	KW_MAIN_RULE TMP_STATE TMP_MOVES 
+%token <t> 	KW_MAIN_RULE TMP_STATE KW_MOVES 
 			
 			KW_PLAYERS
 			KW_STATE KW_INT KW_BOOL 
@@ -33,6 +33,8 @@ SyntaxTree* root;
 			INSTRUCTION_BLOCK INSTRUCTION_LIST
 			M_RULE_LIST M_RULE
 			PAYOFF_LIST PAYOFF
+			MOVE_LIST MOVE PLAYERS_SCOPE
+			IDENTIFIER_LIST
 
 %start GAME
 
@@ -73,11 +75,11 @@ MAIN_RULE: KW_MAIN_RULE '[' M_RULE_LIST ']' {
 	st->children[0] = $3;
 }
 
-MOVES: TMP_MOVES {
+MOVES: KW_MOVES '[' MOVE_LIST ']' {
 	SyntaxTree* st = SyntaxTree_init(moves, "", 1);
 	$$ = st;
 	
-	st->children[0] = $1;
+	st->children[0] = $3;
 }
 
 
@@ -206,7 +208,7 @@ M_RULE_LIST: M_RULE {
 	
 	st->children[0] = $1;
 }
-| M_RULE ';' M_RULE_LIST {
+| M_RULE '%' M_RULE_LIST {
 	SyntaxTree* st = SyntaxTree_init(m_rule_list, "", 2);
 	$$ = st;
 	
@@ -215,13 +217,13 @@ M_RULE_LIST: M_RULE {
 }
 
 
-M_RULE: IDENTIFIER INSTRUCTION_BLOCK PAYOFF_LIST {
+M_RULE: IDENTIFIER '(' INSTRUCTION_BLOCK ')' PAYOFF_LIST {
 	SyntaxTree* st = SyntaxTree_init(m_rule, "", 3);
 	$$ = st;
 	
 	st->children[0] = $1;
-	st->children[1] = $2;
-	st->children[2] = $3;
+	st->children[1] = $3;
+	st->children[2] = $5;
 }
 
 
@@ -245,6 +247,57 @@ PAYOFF: IDENTIFIER INSTRUCTION_BLOCK{
 	
 	st->children[0] = $1;
 	st->children[1] = $2;
+}
+
+
+MOVE_LIST: MOVE {
+	SyntaxTree* st = SyntaxTree_init(move_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| MOVE '%' MOVE_LIST {
+	SyntaxTree* st = SyntaxTree_init(move_list, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+MOVE: IDENTIFIER '<' PLAYERS_SCOPE '>' DATA_SET '(' INSTRUCTION_BLOCK ')' INSTRUCTION_BLOCK{
+	SyntaxTree* st = SyntaxTree_init(move, "", 5);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+	st->children[2] = $5;
+	st->children[3] = $7;
+	st->children[4] = $9;
+}
+
+PLAYERS_SCOPE: '*'  {
+	SyntaxTree* st = SyntaxTree_init(players_scope, "", 0);
+	$$ = st;
+}
+| IDENTIFIER_LIST {
+	SyntaxTree* st = SyntaxTree_init(players_scope, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
+IDENTIFIER_LIST: IDENTIFIER {
+	SyntaxTree* st = SyntaxTree_init(identifier_list, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| IDENTIFIER ',' IDENTIFIER_LIST {
+	SyntaxTree* st = SyntaxTree_init(identifier_list, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
 }
 
 

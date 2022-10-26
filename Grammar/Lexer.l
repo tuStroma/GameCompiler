@@ -28,12 +28,18 @@ STATE {
 	return KW_STATE;
 }
 
-
 MAIN_RULE {
 	yylval.t = SyntaxTree_init(main_rule, yytext, 0);
 	
 	return KW_MAIN_RULE;
 }
+
+MOVES {
+	yylval.t = SyntaxTree_init(moves, yytext, 0);
+	
+	return KW_MOVES;
+}
+
 
 INT {
 	yylval.t = SyntaxTree_init(kw_int, yytext, 0);
@@ -69,12 +75,6 @@ TMP_STATE {
 	return TMP_STATE;
 }
 
-TMP_MOVES {
-	yylval.t = SyntaxTree_init(moves, yytext, 0);
-	
-	return TMP_MOVES;
-}
-
 TMP_INSTRUCTION {
 	yylval.t = SyntaxTree_init(instruction, yytext, 0);
 	
@@ -96,7 +96,7 @@ TMP {
 }
 
 
-[\[\]{}=;] {
+[\[\]{}<>()+\-*/=,;%] {
 	yylval.t = SyntaxTree_init(syntax_char, yytext, 0);
 	
 	return yytext[0];

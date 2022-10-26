@@ -41,7 +41,7 @@
    enum yytokentype {
      KW_MAIN_RULE = 258,
      TMP_STATE = 259,
-     TMP_MOVES = 260,
+     KW_MOVES = 260,
      KW_PLAYERS = 261,
      KW_STATE = 262,
      KW_INT = 263,

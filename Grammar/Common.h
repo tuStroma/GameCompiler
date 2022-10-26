@@ -20,7 +20,9 @@ typedef enum Type
 	data_set, var_list, var_declaration, var_type, var_definition,
 	instruction_block, instruction_list,
 	m_rule_list, m_rule,
-	payoff_list, payoff
+	payoff_list, payoff,
+	move_list, move, players_scope,
+	identifier_list
 } Type;
 
 

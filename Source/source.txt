@@ -14,11 +14,22 @@ STATE
 MAIN_RULE
 [
 	r1
-	{ TMP_INSTRUCTION } 
+	({ TMP_INSTRUCTION }) 
 	players
 	{TMP_INSTRUCTION}
 	masters
 	{TMP_INSTRUCTION TMP_INSTRUCTION}
 ]
 
-TMP_MOVES
+MOVES
+[
+	m1<*> [ INT a = 0;] ({ TMP_INSTRUCTION })
+	{
+		TMP_INSTRUCTION
+	}
+	%
+	m2<rrr> [ BOOL b = false; ] ({ TMP_INSTRUCTION })
+	{
+		TMP_INSTRUCTION
+	}
+]
