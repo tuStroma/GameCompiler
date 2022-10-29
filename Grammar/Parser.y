@@ -35,6 +35,9 @@ SyntaxTree* root;
 			PAYOFF_LIST PAYOFF
 			MOVE_LIST MOVE PLAYERS_SCOPE
 			IDENTIFIER_LIST
+			
+%left '+' '-'
+%left '*' '/' '%'
 
 %start GAME
 
@@ -236,6 +239,53 @@ EXPR: IDENTIFIER {
 	$$ = st;
 	
 	st->children[0] = $1;
+}
+| VAR_DEFINITION{
+	SyntaxTree* st = SyntaxTree_init(expr_literal, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| '(' EXPR ')'{
+	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
+	$$ = st;
+	
+	st->children[0] = $2;
+}
+| EXPR '+' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_add, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '-' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_sub, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '*' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_mul, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '/' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_div, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '%' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_mod, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
 }
 
 // MAIN_RULE

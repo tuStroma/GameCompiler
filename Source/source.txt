@@ -18,7 +18,7 @@ MAIN_RULE
 	players
 	{RETURN;}
 	masters
-	{a = a; RETURN;}
+	{a = 2; RETURN;}
 ]
 
 MOVES
@@ -30,6 +30,6 @@ MOVES
 	%
 	m2<rrr> [ BOOL b = false; ] ({ RETURN; })
 	{
-		RETURN;
+		a = (4 + s) * 7 + 9 % 5; 
 	}
 ]
