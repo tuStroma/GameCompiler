@@ -19,18 +19,18 @@ SyntaxTree* root;
 
 
 
-%token <t> 	KW_MAIN_RULE TMP_STATE KW_MOVES 
+%token <t> 	KW_MAIN_RULE TMP_STATE KW_MOVES
 			
 			KW_PLAYERS
-			KW_STATE KW_INT KW_BOOL 
+			KW_STATE KW_INT KW_BOOL KW_RETURN
 			IDENTIFIER INTEGER BOOLEAN 
-			INSTRUCTION
 			TMP
 
 %type <t> 	GAME MAIN_RULE PLAYERS STATE MOVES
 			PLAYERS_LIST PLAYER
 			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
 			INSTRUCTION_BLOCK INSTRUCTION_LIST
+			INSTRUCTION ASSIGN_INSTR RETURN_INSTR EXPR
 			M_RULE_LIST M_RULE
 			PAYOFF_LIST PAYOFF
 			MOVE_LIST MOVE PLAYERS_SCOPE
@@ -197,8 +197,46 @@ INSTRUCTION_LIST: INSTRUCTION {
 	st->children[1] = $2;
 }
 
-//INSTRUCTION: {}
 
+INSTRUCTION: ASSIGN_INSTR {
+	SyntaxTree* st = SyntaxTree_init(instruction, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+| RETURN_INSTR {
+	SyntaxTree* st = SyntaxTree_init(return_instr, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
+
+ASSIGN_INSTR: IDENTIFIER '=' EXPR ';' {
+	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+RETURN_INSTR: KW_RETURN ';' {
+	SyntaxTree* st = SyntaxTree_init(return_instr, "", 0);
+	$$ = st;
+}
+| KW_RETURN EXPR ';' {
+	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 1);
+	$$ = st;
+	
+	st->children[0] = $2;
+}
+
+
+EXPR: IDENTIFIER {
+	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
 
 // MAIN_RULE
 

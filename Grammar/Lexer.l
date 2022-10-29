@@ -53,6 +53,11 @@ BOOL {
 	return KW_BOOL;
 }
 
+RETURN {
+	yylval.t = SyntaxTree_init(kw_return, yytext, 0);
+	
+	return KW_RETURN;
+}
 
 
 [0-9]+ {
@@ -75,11 +80,7 @@ TMP_STATE {
 	return TMP_STATE;
 }
 
-TMP_INSTRUCTION {
-	yylval.t = SyntaxTree_init(instruction, yytext, 0);
-	
-	return INSTRUCTION;
-}
+
 
 TMP {
 	yylval.t = SyntaxTree_init(tmp, yytext, 0);

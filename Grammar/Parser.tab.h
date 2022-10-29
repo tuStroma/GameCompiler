@@ -46,10 +46,10 @@
      KW_STATE = 262,
      KW_INT = 263,
      KW_BOOL = 264,
-     IDENTIFIER = 265,
-     INTEGER = 266,
-     BOOLEAN = 267,
-     INSTRUCTION = 268,
+     KW_RETURN = 265,
+     IDENTIFIER = 266,
+     INTEGER = 267,
+     BOOLEAN = 268,
      TMP = 269
    };
 #endif
