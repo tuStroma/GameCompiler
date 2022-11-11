@@ -8,8 +8,6 @@
 class InstructionBlock
 {
 private:
-	//DataSet local;
-	//DataSet state;
 
 	Instruction* entry_point;
 

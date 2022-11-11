@@ -1,7 +1,7 @@
 #include "Instruction.h"
 
 Instruction::Instruction() 
-	//:next(NULL)
+	:next(NULL)
 {}
 
 Instruction::Instruction(Instruction* next)

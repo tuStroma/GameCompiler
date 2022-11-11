@@ -12,7 +12,8 @@ STATE
 ]
 ([INT var = 9;]
 {
-	$.a = var + $.c * 2;
+	$.a = var % $.c;
+	$.b = var < $.a && (var >= 9);
 })
 
 MAIN_RULE

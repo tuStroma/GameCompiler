@@ -2,6 +2,7 @@
 
 #include "Instruction.h"
 #include "Expression/ExpressionInt.h"
+#include "Expression/ExpressionBool.h"
 
 class InstructionAssign : public Instruction
 {
@@ -19,5 +20,15 @@ private:
 
 public:
 	InstructionAssignInt(void* to, ExpressionInt* expr);
+	Instruction* Run() override;
+};
+
+class InstructionAssignBool : public InstructionAssign
+{
+private:
+	ExpressionBool* expression;
+
+public:
+	InstructionAssignBool(void* to, ExpressionBool* expr);
 	Instruction* Run() override;
 };

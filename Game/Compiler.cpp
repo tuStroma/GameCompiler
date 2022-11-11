@@ -264,9 +264,10 @@ Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, Da
 		ExpressionInt* expr = createIntExpression(expression_st, local, state, move);
 		return new InstructionAssignInt(to, expr);
 	}
-	case VAR_TYPE::BOOL: {
-		std::cout << "Warnig: Bool value type not implemented\n";
-		return NULL;
+	case VAR_TYPE::BOOL: 
+	{
+		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move);
+		return new InstructionAssignBool(to, expr);
 	}
 	default: {
 		std::cout << "Warnig: Unknown value type\n";
@@ -286,22 +287,11 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 		SyntaxTree* next_expr = extract(input_expression, 0, "EXPR from EXPR");	// REFACTOR
 		return createIntExpression(next_expr, local, state, move);
 	}
-	case Type::expr_ref:	// REFACTOR
+	case Type::expr_ref:
 	{
 		SyntaxTree* variable_reference_st = extract(input_expression, 0, "VARIABLE_REFERENCE from EXPR");	// REFACTOR
-		SyntaxTree* scope_st = extract(variable_reference_st, 0, "SCOPE from VARIABLE_REFERENCE");	// REFACTOR
-		SyntaxTree* identifier_st = extract(variable_reference_st, 1, "IDENTIFIER from VARIABLE_REFERENCE");	// REFACTOR
-
-		DataSet* data_set_from = getScope(scope_st->type, local, state, move);
-		if (!data_set_from) return NULL;
-
-		void* from = data_set_from->getValuePtr(identifier_st->text);
-		VAR_TYPE type_from = data_set_from->getValueType(identifier_st->text);
-		if (!from) std::cout << "Warnig: Not found identifier \"" << identifier_st->text << "\" in scope: " << getTypeName(scope_st->type) << '\n';
-		if (type_from != VAR_TYPE::INT) {
-			std::cout << "Warnig: Incorrect variable type, should be INT\n"; 
-			return NULL;
-		}
+		void* from = getIdentifierReference(variable_reference_st, VAR_TYPE::INT, local, state, move);
+		if (!from) return NULL;
 
 		return new ExpressionInt_Id((int*)from);
 	}
@@ -336,6 +326,92 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 	}
 
 	return nullptr;
+}
+
+ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move)
+{
+	switch (input_expression->type)
+	{
+	case Type::expr:
+	{
+		SyntaxTree* next_expr = extract(input_expression, 0, "EXPR from EXPR");	// REFACTOR
+		return createBoolExpression(next_expr, local, state, move);
+	}
+	case Type::expr_ref:
+	{
+		SyntaxTree* variable_reference_st = extract(input_expression, 0, "VARIABLE_REFERENCE from EXPR");	// REFACTOR
+		void* from = getIdentifierReference(variable_reference_st, VAR_TYPE::INT, local, state, move);
+		if (!from) return NULL;
+
+		return new ExpressionBool_Id((bool*)from);
+	}
+	case Type::expr_literal:
+	{
+		SyntaxTree* var_def = getElement(input_expression, Type::expr_literal, Type::var_definition);
+		std::string string_val = extract(var_def, 0, "type from VAR_DECLARATION")->text;
+		return new ExpressionBool_Value(string_val == "true");
+	}
+	case Type::expr_and:
+	case Type::expr_or:
+	{
+		SyntaxTree* arg_a_st = extract(input_expression, 0, "EXPR A from EXPR");
+		SyntaxTree* arg_b_st = extract(input_expression, 1, "EXPR B from EXPR");
+
+		ExpressionBool* a = createBoolExpression(arg_a_st, local, state, move);
+		ExpressionBool* b = createBoolExpression(arg_b_st, local, state, move);
+
+		switch (input_expression->type)
+		{
+		case Type::expr_and:	return new ExpressionBool_And(a, b);
+		case Type::expr_or:		return new ExpressionBool_Or(a, b);
+		}
+	}
+	case Type::expr_equal:
+	case Type::expr_not_equal:
+	case Type::expr_greater_equal:
+	case Type::expr_less_equal:
+	case Type::expr_greater:
+	case Type::expr_less:
+	{
+		SyntaxTree* arg_a_st = extract(input_expression, 0, "EXPR A from EXPR");
+		SyntaxTree* arg_b_st = extract(input_expression, 1, "EXPR B from EXPR");
+
+		ExpressionInt* a = createIntExpression(arg_a_st, local, state, move);
+		ExpressionInt* b = createIntExpression(arg_b_st, local, state, move);
+
+		switch (input_expression->type)
+		{
+		case Type::expr_equal:			return new ExpressionBool_Equal(a, b);
+		case Type::expr_not_equal:		return new ExpressionBool_NotEqual(a, b);
+		case Type::expr_greater_equal:	return new ExpressionBool_GreaterEqual(a, b);
+		case Type::expr_less_equal:		return new ExpressionBool_LessEqual(a, b);
+		case Type::expr_greater:		return new ExpressionBool_Greater(a, b);
+		case Type::expr_less:			return new ExpressionBool_Less(a, b);
+		}
+	}
+	default: break;
+	}
+
+	return nullptr;
+}
+
+void* Compiler::getIdentifierReference(SyntaxTree* var_reference, VAR_TYPE required_type, DataSet* local, DataSet* state, DataSet* move)
+{
+	SyntaxTree* scope_st = extract(var_reference, 0, "SCOPE from VARIABLE_REFERENCE");	// REFACTOR
+	SyntaxTree* identifier_st = extract(var_reference, 1, "IDENTIFIER from VARIABLE_REFERENCE");	// REFACTOR
+
+	DataSet* data_set_from = getScope(scope_st->type, local, state, move);
+	if (!data_set_from) return NULL;
+
+	void* from = data_set_from->getValuePtr(identifier_st->text);
+	VAR_TYPE type_from = data_set_from->getValueType(identifier_st->text);
+	if (!from) std::cout << "Warnig: Not found identifier \"" << identifier_st->text << "\" in scope: " << getTypeName(scope_st->type) << '\n';
+	if (type_from != required_type) {
+		std::cout << "Warnig: Incorrect variable type, should be " << (int)required_type << "\n";
+		return NULL;
+	}
+
+	return from;
 }
 
 DataSet* Compiler::getScope(Type type, DataSet* local, DataSet* state, DataSet* move)

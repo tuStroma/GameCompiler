@@ -13,3 +13,13 @@ Instruction* InstructionAssignInt::Run()
 	*(int*)to = expression->evaluate();
 	return next;
 }
+
+InstructionAssignBool::InstructionAssignBool(void* to, ExpressionBool* expr)
+	: InstructionAssign(to), expression(expr)
+{}
+
+Instruction* InstructionAssignBool::Run()
+{
+	*(bool*)to = expression->evaluate();
+	return next;
+}

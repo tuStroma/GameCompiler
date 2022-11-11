@@ -84,9 +84,14 @@ private:
 	// Instructions //
 
 	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move);
+
 	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
 	Instruction* createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
+
 	ExpressionInt* createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
+	ExpressionBool* createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
+
+	void* getIdentifierReference(SyntaxTree* var_reference, VAR_TYPE required_type, DataSet* local, DataSet* state, DataSet* move);
 	DataSet* getScope(Type type, DataSet* local, DataSet* state, DataSet* move);
 
 public:
