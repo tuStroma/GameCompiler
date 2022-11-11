@@ -28,6 +28,26 @@ SyntaxTree* Compiler::extract(SyntaxTree* ptr, int index, std::string warning)
 	return ptr->children[index];
 }
 
+SyntaxTree* Compiler::getElement(SyntaxTree* ptr, Type from, Type get)
+{
+	std::string warning = (std::string)getTypeName(get) + " from " + (std::string)getTypeName(from);
+	if (!nullCheck(ptr, warning))
+		return NULL;
+
+	if (ptr->type != from)
+	{
+		std::cout << "Warnig: Node type is " << getTypeName(ptr->type) << ", and should be " << getTypeName(from) << '\n';
+		return NULL;
+	}
+
+	for (int i = 0; i < ptr->children_num; i++)
+		if (ptr->children[i]->type == get)
+			return ptr->children[i];
+
+	std::cout << "Warnig: Not found " << getTypeName(get) << " in " << getTypeName(from) << '\n';
+	return NULL;
+}
+
 SyntaxTree* Compiler::get_STATE_from_GAME(SyntaxTree* game)
 {
 	return extract(game, 1, "STATE from GAME");
@@ -93,6 +113,9 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 {
 	DataSet* state = createDataSet(get_STATE_from_GAME(input_game));
 
+	void* ptr = state->getValuePtr("a");
+	*(int*)ptr = 7;
+
 	state->print();
 
 	Game* game = new Game(state);
@@ -106,14 +129,15 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_state)
 
 	std::list<SyntaxTree*> declaration_list;
 
-	while (true)
+	while (var_list->children_num == 2)
 	{
-		declaration_list.push_back(get_VAR_DECLARATION_from_VAR_LIST(var_list));
-
-		if (var_list->children_num == 2)
+		//if (var_list->children_num == 2)
+		//{
+			declaration_list.push_back(get_VAR_DECLARATION_from_VAR_LIST(var_list));
 			var_list = get_VAR_LIST_from_VAR_LIST(var_list);
-		else
-			break;
+		//}
+		//else
+			//break;
 	}
 
 	int size = 0;
@@ -141,4 +165,13 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_state)
 	}
 
 	return data_set;
+}
+
+InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move)
+{
+	Instruction* entry = NULL;
+
+	InstructionBlock* instruction_block = new InstructionBlock(entry);
+
+	return instruction_block;
 }

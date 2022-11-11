@@ -60,6 +60,19 @@ RETURN {
 }
 
 
+"==" { return OPERATOR_EQUAL; }
+
+"!=" { return OPERATOR_NOT_EQUAL; }
+
+"<=" { return OPERATOR_LESS_EQUAL; }
+
+">=" { return OPERATOR_GREATER_EQUAL; }
+
+"&&" { return OPERATOR_AND; }
+
+"||" { return OPERATOR_OR; }
+
+
 [0-9]+ {
 	yylval.t = SyntaxTree_init(integer, yytext, 0);
 	
@@ -97,7 +110,7 @@ TMP {
 }
 
 
-[\[\]{}<>()+\-*/=,;%] {
+[\[\]{}<>()+\-*/=,;%$#\.] {
 	yylval.t = SyntaxTree_init(syntax_char, yytext, 0);
 	
 	return yytext[0];

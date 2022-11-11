@@ -50,7 +50,13 @@
      IDENTIFIER = 266,
      INTEGER = 267,
      BOOLEAN = 268,
-     TMP = 269
+     OPERATOR_EQUAL = 269,
+     OPERATOR_NOT_EQUAL = 270,
+     OPERATOR_LESS_EQUAL = 271,
+     OPERATOR_GREATER_EQUAL = 272,
+     OPERATOR_AND = 273,
+     OPERATOR_OR = 274,
+     TMP = 275
    };
 #endif
 
@@ -71,7 +77,7 @@ symval
 
 
 /* Line 1676 of yacc.c  */
-#line 75 "Parser.tab.h"
+#line 81 "Parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

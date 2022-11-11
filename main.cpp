@@ -4,15 +4,13 @@
 #include "Grammar/Parser.tab.h"
 #include "Game/Compiler.h"
 
-extern "C" SyntaxTree* parser_main(int argc, char* argv[]);
+extern "C" SyntaxTree* parser_main(char* file_path);
 
 
 void parse_test()
 {
-	char* tab[2];
-	char str[20] = "Source/source.txt";
-	tab[1] = str;
-	SyntaxTree* st = parser_main(2, tab);
+	char path[20] = "Source/source.txt";
+	SyntaxTree* st = parser_main(path);
 	SyntaxTree_print(st, 0);
 
 	std::cout << "\n\n";

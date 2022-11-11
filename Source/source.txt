@@ -10,26 +10,29 @@ STATE
 	BOOL b = false;
 	INT c = 5;
 ]
+([]{})
 
 MAIN_RULE
 [
 	r1
-	({ RETURN; }) 
+	([]{ RETURN true; }) 
 	players
-	{RETURN;}
+	[]{RETURN 1;}
 	masters
-	{a = 2; RETURN;}
+	[]{#.a = 2; RETURN a;}
 ]
 
 MOVES
 [
-	m1<*> [ INT a = 0;] ({ RETURN; })
+	m1<*> [ INT a = 0;] ([]{ RETURN; })
+	[]
 	{
 		RETURN;
 	}
 	%
-	m2<rrr> [ BOOL b = false; ] ({ RETURN; })
+	m2<masters> [ BOOL b = false; ] ([]{ RETURN; })
+	[]
 	{
-		a = (4 + s) * 7 + 9 % 5; 
+		a = a > b || w >= 7 && 8 != a; 
 	}
 ]

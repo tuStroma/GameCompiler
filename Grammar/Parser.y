@@ -24,6 +24,7 @@ SyntaxTree* root;
 			KW_PLAYERS
 			KW_STATE KW_INT KW_BOOL KW_RETURN
 			IDENTIFIER INTEGER BOOLEAN 
+			OPERATOR_EQUAL OPERATOR_NOT_EQUAL OPERATOR_LESS_EQUAL OPERATOR_GREATER_EQUAL OPERATOR_AND OPERATOR_OR
 			TMP
 
 %type <t> 	GAME MAIN_RULE PLAYERS STATE MOVES
@@ -31,11 +32,16 @@ SyntaxTree* root;
 			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
 			INSTRUCTION_BLOCK INSTRUCTION_LIST
 			INSTRUCTION ASSIGN_INSTR RETURN_INSTR EXPR
+			VAR_REFERENCE SCOPE
 			M_RULE_LIST M_RULE
 			PAYOFF_LIST PAYOFF
 			MOVE_LIST MOVE PLAYERS_SCOPE
 			IDENTIFIER_LIST
 			
+%left OPERATOR_OR
+%left OPERATOR_AND
+%left OPERATOR_EQUAL OPERATOR_NOT_EQUAL
+%left OPERATOR_GREATER_EQUAL OPERATOR_LESS_EQUAL '<' '>'
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -64,11 +70,12 @@ PLAYERS: KW_PLAYERS '[' PLAYERS_LIST ']'{
 	st->children[0] = $3;
 }
 
-STATE: KW_STATE DATA_SET {
-	SyntaxTree* st = SyntaxTree_init(state, "", 1);
+STATE: KW_STATE DATA_SET '(' INSTRUCTION_BLOCK ')' {
+	SyntaxTree* st = SyntaxTree_init(state, "", 2);
 	$$ = st;
 	
 	st->children[0] = $2;
+	st->children[1] = $4;
 }
 
 MAIN_RULE: KW_MAIN_RULE '[' M_RULE_LIST ']' {
@@ -120,11 +127,10 @@ DATA_SET: '[' VAR_LIST ']' {
 	st->children[0] = $2;
 }
 
-VAR_LIST: VAR_DECLARATION {
-	SyntaxTree* st = SyntaxTree_init(var_list, "", 1);
+
+VAR_LIST: {
+	SyntaxTree* st = SyntaxTree_init(var_list_tail, "", 0);
 	$$ = st;
-	
-	st->children[0] = $1;
 }
 | VAR_DECLARATION VAR_LIST {
 	SyntaxTree* st = SyntaxTree_init(var_list, "", 2);
@@ -172,13 +178,7 @@ VAR_DEFINITION: INTEGER {
 
 // INSTRUCTIONS
 
-INSTRUCTION_BLOCK: '{' INSTRUCTION_LIST '}' {
-	SyntaxTree* st = SyntaxTree_init(instruction_block, "", 1);
-	$$ = st;
-	
-	st->children[0] = $2;
-}
-|DATA_SET '{' INSTRUCTION_LIST '}' {
+INSTRUCTION_BLOCK: DATA_SET '{' INSTRUCTION_LIST '}' {
 	SyntaxTree* st = SyntaxTree_init(instruction_block, "", 2);
 	$$ = st;
 	
@@ -186,11 +186,9 @@ INSTRUCTION_BLOCK: '{' INSTRUCTION_LIST '}' {
 	st->children[1] = $3;
 }
 
-INSTRUCTION_LIST: INSTRUCTION {
-	SyntaxTree* st = SyntaxTree_init(instruction_list, "", 1);
+INSTRUCTION_LIST: {
+	SyntaxTree* st = SyntaxTree_init(instruction_list_tail, "", 0);
 	$$ = st;
-	
-	st->children[0] = $1;
 }
 | INSTRUCTION INSTRUCTION_LIST {
 	SyntaxTree* st = SyntaxTree_init(instruction_list, "", 2);
@@ -208,13 +206,13 @@ INSTRUCTION: ASSIGN_INSTR {
 	st->children[0] = $1;
 }
 | RETURN_INSTR {
-	SyntaxTree* st = SyntaxTree_init(return_instr, "", 1);
+	SyntaxTree* st = SyntaxTree_init(instruction, "", 1);
 	$$ = st;
 	
 	st->children[0] = $1;
 }
 
-ASSIGN_INSTR: IDENTIFIER '=' EXPR ';' {
+ASSIGN_INSTR: VAR_REFERENCE '=' EXPR ';' {
 	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 2);
 	$$ = st;
 	
@@ -227,14 +225,14 @@ RETURN_INSTR: KW_RETURN ';' {
 	$$ = st;
 }
 | KW_RETURN EXPR ';' {
-	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 1);
+	SyntaxTree* st = SyntaxTree_init(return_instr, "", 1);
 	$$ = st;
 	
 	st->children[0] = $2;
 }
 
 
-EXPR: IDENTIFIER {
+EXPR: VAR_REFERENCE {
 	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
 	$$ = st;
 	
@@ -286,6 +284,85 @@ EXPR: IDENTIFIER {
 	
 	st->children[0] = $1;
 	st->children[1] = $3;
+}
+
+| EXPR OPERATOR_EQUAL EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_equal, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR OPERATOR_NOT_EQUAL EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_not_equal, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR OPERATOR_GREATER_EQUAL EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_greater_equal, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR OPERATOR_LESS_EQUAL EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_greater_equal, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '>' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_greater, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR '<' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_less, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR OPERATOR_AND EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_and, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+| EXPR OPERATOR_OR EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_or, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $3;
+}
+
+
+VAR_REFERENCE: SCOPE IDENTIFIER {
+	SyntaxTree* st = SyntaxTree_init(var_reference, "", 2);
+	$$ = st;
+	
+	st->children[0] = $1;
+	st->children[1] = $2;
+}
+
+SCOPE: {
+	SyntaxTree* st = SyntaxTree_init(local_scope, "", 0);
+	$$ = st;
+}
+| '$' '.' {
+	SyntaxTree* st = SyntaxTree_init(state_scope, "", 0);
+	$$ = st;
+}
+| '#' '.' {
+	SyntaxTree* st = SyntaxTree_init(move_scope, "", 0);
+	$$ = st;
 }
 
 // MAIN_RULE
@@ -394,22 +471,20 @@ IDENTIFIER_LIST: IDENTIFIER {
 
 %%
 
-SyntaxTree* parser_main(int argc, char *argv[])
+SyntaxTree* parser_main(char *file_path)
 {
 	FILE *fp = NULL;
-	if (argc == 2)
-	{
-		fopen_s(&fp, argv[1], "rb");
+	
+	fopen_s(&fp, file_path, "rb");
 
-		if (fp == NULL)
-		{
-			perror("Failed to open file");
-			return NULL;
-		}
-		else
-		{
-			yyin = fp;
-		}
+	if (fp == NULL)
+	{
+		perror("Failed to open file");
+		return NULL;
+	}
+	else
+	{
+		yyin = fp;
 	}
 
 	yyparse();
