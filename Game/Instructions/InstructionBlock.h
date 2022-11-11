@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "Instruction/Instruction.h"
+#include "Instruction/InstructionAssign.h"
 #include "../DataSet/DataSet.h"
 
 class InstructionBlock

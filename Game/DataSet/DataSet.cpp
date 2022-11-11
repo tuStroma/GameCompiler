@@ -48,6 +48,17 @@ void* DataSet::getValuePtr(std::string name)
 	return (char*)data + data_index;
 }
 
+VAR_TYPE DataSet::getValueType(std::string name)
+{
+	if (!exist(name))
+	{
+		std::cout << "not found\n";
+		return VAR_TYPE::UNKNOWN;
+	}
+
+	return map.at(name).type;
+}
+
 void DataSet::print()
 {
 	for (std::pair<const std::string, variable>& kv : map)

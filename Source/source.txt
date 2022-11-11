@@ -10,7 +10,10 @@ STATE
 	BOOL b = false;
 	INT c = 5;
 ]
-([]{})
+([INT var = 9;]
+{
+	$.a = var + $.c * 2;
+})
 
 MAIN_RULE
 [

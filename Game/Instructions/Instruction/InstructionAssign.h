@@ -7,6 +7,8 @@ class InstructionAssign : public Instruction
 {
 protected:
 	void* to;
+
+	InstructionAssign(void* to);
 };
 
 
@@ -16,5 +18,6 @@ private:
 	ExpressionInt* expression;
 
 public:
+	InstructionAssignInt(void* to, ExpressionInt* expr);
 	Instruction* Run() override;
 };

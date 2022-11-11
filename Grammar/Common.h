@@ -19,7 +19,7 @@ typedef enum Type
 	data_set, var_list, var_list_tail, var_declaration, var_type, var_definition,
 	instruction_block, instruction_list,
 	instruction, assign_instr, return_instr,
-	expr, expr_literal, expr_add, expr_sub, expr_mul, expr_div, expr_mod,
+	expr, expr_ref, expr_literal, expr_add, expr_sub, expr_mul, expr_div, expr_mod,
 	expr_equal, expr_not_equal, expr_less_equal, expr_greater_equal, expr_greater, expr_less, expr_and, expr_or,
 	var_reference, local_scope, state_scope, move_scope,
 	m_rule_list, m_rule,

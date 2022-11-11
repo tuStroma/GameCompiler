@@ -9,7 +9,7 @@ void InstructionBlock::RunBlock()
 	Instruction* instr = entry_point;
 
 	while (instr)
-		instr->Run();
+		instr = instr->Run();
 
 	// TODO: get return value
 }

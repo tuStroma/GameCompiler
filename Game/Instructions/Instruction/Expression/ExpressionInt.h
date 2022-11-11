@@ -62,3 +62,33 @@ public:
 	ExpressionInt_Sub(ExpressionInt* a, ExpressionInt* b) : ExpressionInt_TwoArgumentsOperation(a, b) {}
 	int evaluate() override;
 };
+
+// Expression represents 
+// multiplication
+// of two expressions
+class ExpressionInt_Mul : public ExpressionInt_TwoArgumentsOperation
+{
+public:
+	ExpressionInt_Mul (ExpressionInt* a, ExpressionInt* b) : ExpressionInt_TwoArgumentsOperation(a, b) {}
+	int evaluate() override;
+};
+
+// Expression represents 
+// division
+// of two expressions
+class ExpressionInt_Div : public ExpressionInt_TwoArgumentsOperation
+{
+public:
+	ExpressionInt_Div(ExpressionInt* a, ExpressionInt* b) : ExpressionInt_TwoArgumentsOperation(a, b) {}
+	int evaluate() override;
+};
+
+// Expression represents 
+// mod
+// of two expressions
+class ExpressionInt_Mod : public ExpressionInt_TwoArgumentsOperation
+{
+public:
+	ExpressionInt_Mod(ExpressionInt* a, ExpressionInt* b) : ExpressionInt_TwoArgumentsOperation(a, b) {}
+	int evaluate() override;
+};

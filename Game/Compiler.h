@@ -14,12 +14,15 @@ private:
 	// Extrctors
 	SyntaxTree* extract(SyntaxTree* ptr, int index, std::string warning);
 	SyntaxTree* getElement(SyntaxTree* ptr, Type from, Type get);
+	SyntaxTree* getSingleElement(SyntaxTree* ptr, Type from);
+
 
 	// Extract GAME
 	SyntaxTree* get_STATE_from_GAME(SyntaxTree* game);
 
 	// Extract STATE
 	SyntaxTree* get_DATA_SET_from_STATE(SyntaxTree* state);
+	SyntaxTree* get_INSTRUCTION_BLOCK_from_STATE(SyntaxTree* state);
 
 	// Extract DATA_SET
 	SyntaxTree* get_VAR_LIST_from_DATA_SET(SyntaxTree* data_set);
@@ -75,12 +78,16 @@ private:
 	//						|
 	//                      -> VAR_DECLARATION
 	//                         VAR_LIST
-	DataSet* createDataSet(SyntaxTree* input_state);
+	DataSet* createDataSet(SyntaxTree* input_data_set);
 
 
 	// Instructions //
 
 	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move);
+	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
+	Instruction* createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
+	ExpressionInt* createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
+	DataSet* getScope(Type type, DataSet* local, DataSet* state, DataSet* move);
 
 public:
 	// Takes as an input all syntax tree

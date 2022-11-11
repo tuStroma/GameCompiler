@@ -233,7 +233,7 @@ RETURN_INSTR: KW_RETURN ';' {
 
 
 EXPR: VAR_REFERENCE {
-	SyntaxTree* st = SyntaxTree_init(expr, "", 1);
+	SyntaxTree* st = SyntaxTree_init(expr_ref, "", 1);
 	$$ = st;
 	
 	st->children[0] = $1;

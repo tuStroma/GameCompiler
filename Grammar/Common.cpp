@@ -39,6 +39,7 @@ const char* getTypeName(Type type)
 	case assign_instr:			return "assign_instr";
 	case return_instr:			return "return_instr";
 	case expr:					return "expr";
+	case expr_ref:				return "expr_ref";
 	case expr_literal:			return "expr_literal";
 	case expr_add:				return "expr_add";
 	case expr_sub:				return "expr_sub";

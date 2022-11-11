@@ -46,3 +46,18 @@ int ExpressionInt_Sub::evaluate()
 {
 	return expr_a->evaluate() - expr_b->evaluate();
 }
+
+int ExpressionInt_Mul::evaluate()
+{
+	return expr_a->evaluate() * expr_b->evaluate();
+}
+
+int ExpressionInt_Div::evaluate()
+{
+	return expr_a->evaluate() / expr_b->evaluate();
+}
+
+int ExpressionInt_Mod::evaluate()
+{
+	return expr_a->evaluate() % expr_b->evaluate();
+}

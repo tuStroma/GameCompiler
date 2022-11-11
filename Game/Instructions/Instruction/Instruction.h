@@ -9,7 +9,11 @@ protected:
 	Instruction* next;
 
 public:
+	Instruction();
 	Instruction(Instruction* next);
+
+	void setNext(Instruction* next);
+
 	virtual Instruction* Run();
 
 };

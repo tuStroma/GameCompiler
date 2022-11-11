@@ -44,6 +44,7 @@ public:
 	bool defineVariable(std::string name, VAR_TYPE type, int size);
 
 	void* getValuePtr(std::string name);
+	VAR_TYPE getValueType(std::string name);
 
 
 	void print();
