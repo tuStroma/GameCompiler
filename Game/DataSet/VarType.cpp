@@ -15,6 +15,7 @@ std::string VarTypeToString(VAR_TYPE type)
 	{
 	case VAR_TYPE::INT:		return "INT";
 	case VAR_TYPE::BOOL:	return "BOOL";
+	case VAR_TYPE::VOID:	return "VOID";
 	default:				return "UNKNOWN";
 	}
 }

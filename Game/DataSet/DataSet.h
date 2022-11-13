@@ -51,3 +51,21 @@ public:
 
 };
 
+
+class Variable
+{
+private:
+	void* value_ptr;
+	VAR_TYPE type;
+
+public:
+	Variable(VAR_TYPE type);
+
+	bool setValueInt(int value);
+	bool setValueBool(bool value);
+
+	void* getValue();
+	int getValueInt();
+	bool getValueBool();
+	VAR_TYPE getType();
+};

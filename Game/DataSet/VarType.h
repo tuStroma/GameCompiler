@@ -7,6 +7,7 @@ enum class VAR_TYPE
 {
 	INT,
 	BOOL,
+	VOID,
 
 	UNKNOWN
 

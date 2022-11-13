@@ -13,7 +13,11 @@ STATE
 ([INT var = 9;]
 {
 	$.a = var % $.c;
+	$.a = $.a + 1;
+	$.a = $.a + 1;
+	$.a = $.a + 1;
 	$.b = var < $.a && (var >= 9);
+	RETURN;
 })
 
 MAIN_RULE

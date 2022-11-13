@@ -138,7 +138,7 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 	SyntaxTree* state_st = get_STATE_from_GAME(input_game);
 
 	DataSet* state = createDataSet(get_DATA_SET_from_STATE(state_st));
-	InstructionBlock* IB = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(state_st), state, NULL);
+	InstructionBlock* IB = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(state_st), state, NULL, VAR_TYPE::VOID);
 
 	void* ptr = state->getValuePtr("a");
 	*(int*)ptr = 7;
@@ -189,15 +189,15 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_data_set)
 	return data_set;
 }
 
-InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move)
+InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type)
 {
 	SyntaxTree* local_data = getElement(input_instruction_block, Type::instruction_block, Type::data_set);
 	SyntaxTree* instruction_list = extract(input_instruction_block, 1, "INSTRUCTION_LIST from INSTRUCTION_BLOCK");	// REFACTOR
-		//getElement(input_instruction_block, Type::instruction_block, Type::instruction_list);
 
 	// Create local DataSet
 	DataSet* local = createDataSet(local_data);
 
+	InstructionBlock* instruction_block = new InstructionBlock(NULL, return_type);
 
 	// Create Instruction graph
 	Instruction* entry = NULL;
@@ -207,9 +207,8 @@ InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction
 	{
 		SyntaxTree* instruction_st = getElement(instruction_list, Type::instruction_list, Type::instruction);
 		instruction_list = extract(instruction_list, 1, "INSTRUCTION_LIST from INSTRUCTION_LIST");	// REFACTOR
-			//getElement(instruction_list, Type::instruction_list, Type::instruction_list);
 
-		Instruction* next_instr = createInstruction(instruction_st, local, state, move);
+		Instruction* next_instr = createInstruction(instruction_st, local, state, move, instruction_block->getReturnVariable());
 
 		if (entry == NULL)
 		{
@@ -224,17 +223,20 @@ InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction
 
 	}
 
-	return new InstructionBlock(entry);
+	instruction_block->setEntryPoint(entry);
+	
+	return instruction_block;
+	//return new InstructionBlock(entry, return_type);
 }
 
-Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move)
+Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var)
 {
 	SyntaxTree* typed_instruction = getSingleElement(input_instruction, Type::instruction);
 
 	switch (typed_instruction->type)
 	{
 	case Type::assign_instr: return createAssignInstruction(typed_instruction, local, state, move);
-	case Type::return_instr: break;
+	case Type::return_instr: return createReturnInstruction(typed_instruction, local, state, move, return_var);
 	default: break;
 	}
 
@@ -273,6 +275,47 @@ Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, Da
 		std::cout << "Warnig: Unknown value type\n";
 		return NULL;
 	}
+	}
+
+	return nullptr;
+}
+
+Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var)
+{
+	bool returns_value = input_instruction->children_num == 1;
+	SyntaxTree* expression_st = NULL;
+	if(returns_value)
+		expression_st = extract(input_instruction, 0, "EXPR from RETURN_INSTR");	// REFACTOR
+
+	switch (return_var->getType())
+	{
+	case VAR_TYPE::VOID: {
+		if (returns_value)
+		{
+			std::cout << "Warnig: Wrong return type, should be VOID\n";
+			return NULL;
+		}
+		return new InstructionReturnVoid();
+	}
+	case VAR_TYPE::INT: {
+		if (!returns_value)
+		{
+			std::cout << "Warnig: No return value, should be VOID\n";
+			return NULL;
+		}
+		ExpressionInt* expr = createIntExpression(expression_st, local, state, move);
+		return new InstructionReturnInt(expr, return_var);
+	}
+	case VAR_TYPE::BOOL: {
+		if (!returns_value)
+		{
+			std::cout << "Warnig: No return value, should be VOID\n";
+			return NULL;
+		}
+		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move);
+		return new InstructionReturnBool(expr, return_var);
+	}
+	default: break;
 	}
 
 	return nullptr;
@@ -340,7 +383,7 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 	case Type::expr_ref:
 	{
 		SyntaxTree* variable_reference_st = extract(input_expression, 0, "VARIABLE_REFERENCE from EXPR");	// REFACTOR
-		void* from = getIdentifierReference(variable_reference_st, VAR_TYPE::INT, local, state, move);
+		void* from = getIdentifierReference(variable_reference_st, VAR_TYPE::BOOL, local, state, move);
 		if (!from) return NULL;
 
 		return new ExpressionBool_Id((bool*)from);
@@ -407,7 +450,7 @@ void* Compiler::getIdentifierReference(SyntaxTree* var_reference, VAR_TYPE requi
 	VAR_TYPE type_from = data_set_from->getValueType(identifier_st->text);
 	if (!from) std::cout << "Warnig: Not found identifier \"" << identifier_st->text << "\" in scope: " << getTypeName(scope_st->type) << '\n';
 	if (type_from != required_type) {
-		std::cout << "Warnig: Incorrect variable type, should be " << (int)required_type << "\n";
+		std::cout << "Warnig: Incorrect variable type, should be " << VarTypeToString(required_type) << "\n";
 		return NULL;
 	}
 
