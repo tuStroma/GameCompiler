@@ -47,16 +47,18 @@
      KW_INT = 263,
      KW_BOOL = 264,
      KW_RETURN = 265,
-     IDENTIFIER = 266,
-     INTEGER = 267,
-     BOOLEAN = 268,
-     OPERATOR_EQUAL = 269,
-     OPERATOR_NOT_EQUAL = 270,
-     OPERATOR_LESS_EQUAL = 271,
-     OPERATOR_GREATER_EQUAL = 272,
-     OPERATOR_AND = 273,
-     OPERATOR_OR = 274,
-     TMP = 275
+     KW_IF = 266,
+     KW_WHILE = 267,
+     IDENTIFIER = 268,
+     INTEGER = 269,
+     BOOLEAN = 270,
+     OPERATOR_EQUAL = 271,
+     OPERATOR_NOT_EQUAL = 272,
+     OPERATOR_LESS_EQUAL = 273,
+     OPERATOR_GREATER_EQUAL = 274,
+     OPERATOR_AND = 275,
+     OPERATOR_OR = 276,
+     TMP = 277
    };
 #endif
 
@@ -77,7 +79,7 @@ symval
 
 
 /* Line 1676 of yacc.c  */
-#line 81 "Parser.tab.h"
+#line 83 "Parser.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -12,7 +12,7 @@ public:
 	Instruction();
 	Instruction(Instruction* next);
 
-	void setNext(Instruction* next);
+	virtual void setNext(Instruction* next);
 
 	virtual Instruction* Run();
 

@@ -38,6 +38,8 @@ const char* getTypeName(Type type)
 	case instruction:			return "instruction";
 	case assign_instr:			return "assign_instr";
 	case return_instr:			return "return_instr";
+	case if_instr:				return "if_instr";
+	case while_instr:			return "while_instr";
 	case expr:					return "expr";
 	case expr_ref:				return "expr_ref";
 	case expr_literal:			return "expr_literal";

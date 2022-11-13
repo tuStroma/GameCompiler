@@ -23,6 +23,7 @@ SyntaxTree* root;
 			
 			KW_PLAYERS
 			KW_STATE KW_INT KW_BOOL KW_RETURN
+			KW_IF KW_WHILE
 			IDENTIFIER INTEGER BOOLEAN 
 			OPERATOR_EQUAL OPERATOR_NOT_EQUAL OPERATOR_LESS_EQUAL OPERATOR_GREATER_EQUAL OPERATOR_AND OPERATOR_OR
 			TMP
@@ -31,7 +32,7 @@ SyntaxTree* root;
 			PLAYERS_LIST PLAYER
 			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
 			INSTRUCTION_BLOCK INSTRUCTION_LIST
-			INSTRUCTION ASSIGN_INSTR RETURN_INSTR EXPR
+			INSTRUCTION ASSIGN_INSTR RETURN_INSTR IF_INSTR EXPR
 			VAR_REFERENCE SCOPE
 			M_RULE_LIST M_RULE
 			PAYOFF_LIST PAYOFF
@@ -211,6 +212,12 @@ INSTRUCTION: ASSIGN_INSTR {
 	
 	st->children[0] = $1;
 }
+| IF_INSTR {
+	SyntaxTree* st = SyntaxTree_init(instruction, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
 
 ASSIGN_INSTR: VAR_REFERENCE '=' EXPR ';' {
 	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 2);
@@ -231,6 +238,13 @@ RETURN_INSTR: KW_RETURN ';' {
 	st->children[0] = $2;
 }
 
+IF_INSTR: KW_IF '(' EXPR ')' '{' INSTRUCTION_LIST '}' {
+	SyntaxTree* st = SyntaxTree_init(if_instr, "", 2);
+	$$ = st;
+	
+	st->children[0] = $3;
+	st->children[1] = $6;
+}
 
 EXPR: VAR_REFERENCE {
 	SyntaxTree* st = SyntaxTree_init(expr_ref, "", 1);

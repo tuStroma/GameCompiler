@@ -85,10 +85,12 @@ private:
 
 	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type);
 
-	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var);
+	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions);
 	Instruction* createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
 	Instruction* createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var);
+	Instruction* createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions);
 
+	Instruction* createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Variable* return_variable, std::list<Instruction*>& predecessors);
 	ExpressionInt* createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
 	ExpressionBool* createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
 

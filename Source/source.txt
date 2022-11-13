@@ -12,12 +12,15 @@ STATE
 ]
 ([INT var = 9;]
 {
-	$.a = var % $.c;
-	$.a = $.a + 1;
-	$.a = $.a + 1;
-	$.a = $.a + 1;
-	$.b = var < $.a && (var >= 9);
-	RETURN;
+	IF(true)
+	{
+		IF(true)
+		{
+			$.c = 16;
+		}
+		$.a = 10;
+	}
+	$.c = $.c + 1;
 })
 
 MAIN_RULE

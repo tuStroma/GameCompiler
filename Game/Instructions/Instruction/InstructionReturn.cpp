@@ -21,11 +21,11 @@ Instruction* InstructionReturnVoid::Run()
 Instruction* InstructionReturnInt::Run()
 {
 	*(int*)return_pointer = expr->evaluate();
-	return next;
+	return NULL;
 }
 
 Instruction* InstructionReturnBool::Run()
 {
 	*(bool*)return_pointer = expr->evaluate();
-	return next;
+	return NULL;
 }

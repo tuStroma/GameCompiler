@@ -140,9 +140,6 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 	DataSet* state = createDataSet(get_DATA_SET_from_STATE(state_st));
 	InstructionBlock* IB = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(state_st), state, NULL, VAR_TYPE::VOID);
 
-	void* ptr = state->getValuePtr("a");
-	*(int*)ptr = 7;
-
 	IB->RunBlock();
 	state->print();
 
@@ -200,43 +197,27 @@ InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction
 	InstructionBlock* instruction_block = new InstructionBlock(NULL, return_type);
 
 	// Create Instruction graph
-	Instruction* entry = NULL;
-	Instruction* previous_instr = NULL;
-
-	while (instruction_list->type == Type::instruction_list)
-	{
-		SyntaxTree* instruction_st = getElement(instruction_list, Type::instruction_list, Type::instruction);
-		instruction_list = extract(instruction_list, 1, "INSTRUCTION_LIST from INSTRUCTION_LIST");	// REFACTOR
-
-		Instruction* next_instr = createInstruction(instruction_st, local, state, move, instruction_block->getReturnVariable());
-
-		if (entry == NULL)
-		{
-			entry = next_instr;
-			previous_instr = next_instr;
-		}
-		else
-		{
-			previous_instr->setNext(next_instr);
-			previous_instr = next_instr;
-		}
-
-	}
+	std::list<Instruction*> last_instructions;
+	Instruction* entry = createInstructionGraph(instruction_list, local, state, move, instruction_block->getReturnVariable(), last_instructions);
 
 	instruction_block->setEntryPoint(entry);
 	
 	return instruction_block;
-	//return new InstructionBlock(entry, return_type);
 }
 
-Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var)
+Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
 {
 	SyntaxTree* typed_instruction = getSingleElement(input_instruction, Type::instruction);
 
 	switch (typed_instruction->type)
 	{
-	case Type::assign_instr: return createAssignInstruction(typed_instruction, local, state, move);
+	case Type::assign_instr: {
+		Instruction* instr = createAssignInstruction(typed_instruction, local, state, move);
+		last_instructions.push_back(instr);
+		return instr;
+	}
 	case Type::return_instr: return createReturnInstruction(typed_instruction, local, state, move, return_var);
+	case Type::if_instr: return createIfInstruction(typed_instruction, local, state, move, return_var, last_instructions);
 	default: break;
 	}
 
@@ -319,6 +300,57 @@ Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, Da
 	}
 
 	return nullptr;
+}
+
+Instruction* Compiler::createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
+{
+	SyntaxTree* condition_st = extract(input_instruction, 0, "EXPR from IF_INSTR");	// REFACTOR
+	SyntaxTree* instruction_list_st = extract(input_instruction, 1, "INSTRUCTION_LIST from IF_INSTR");	// REFACTOR
+
+	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move);
+	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, return_var, last_instructions);
+
+	InstructionConditionalJump* instr = new InstructionConditionalJump(condition, first);
+
+	last_instructions.push_back(instr);
+
+	return instr;
+}
+
+Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Variable* return_variable, std::list<Instruction*>& predecessors)
+{
+	Instruction* entry = NULL;
+	//Instruction* previous_instr = NULL;
+	std::list<Instruction*> last_instructions;
+
+	while (input_instruction_list->type == Type::instruction_list)
+	{
+		SyntaxTree* instruction_st = getElement(input_instruction_list, Type::instruction_list, Type::instruction);
+		input_instruction_list = extract(input_instruction_list, 1, "INSTRUCTION_LIST from INSTRUCTION_LIST");	// REFACTOR
+
+		last_instructions.clear();
+		Instruction* next_instr = createInstruction(instruction_st, local, state, move, return_variable, last_instructions);
+
+		if (entry == NULL)
+		{
+			entry = next_instr;
+			//previous_instr = next_instr;
+			predecessors = last_instructions;
+		}
+		else
+		{
+			//previous_instr->setNext(next_instr);
+			//previous_instr = next_instr;
+			for (Instruction* instr : predecessors)
+				instr->setNext(next_instr);
+
+			predecessors.clear();
+			predecessors = last_instructions;
+		}
+
+	}
+
+	return entry;
 }
 
 ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move)

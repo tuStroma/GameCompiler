@@ -59,6 +59,18 @@ RETURN {
 	return KW_RETURN;
 }
 
+IF {
+	yylval.t = SyntaxTree_init(kw_if, yytext, 0);
+	
+	return KW_IF;
+}
+
+WHILE {
+	yylval.t = SyntaxTree_init(kw_while, yytext, 0);
+	
+	return KW_WHILE;
+}
+
 
 "==" { return OPERATOR_EQUAL; }
 
