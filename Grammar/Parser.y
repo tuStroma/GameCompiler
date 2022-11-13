@@ -41,6 +41,7 @@ SyntaxTree* root;
 			
 %left OPERATOR_OR
 %left OPERATOR_AND
+%left '!'
 %left OPERATOR_EQUAL OPERATOR_NOT_EQUAL
 %left OPERATOR_GREATER_EQUAL OPERATOR_LESS_EQUAL '<' '>'
 %left '+' '-'
@@ -315,6 +316,12 @@ EXPR: VAR_REFERENCE {
 	st->children[0] = $1;
 	st->children[1] = $3;
 }
+| '-' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_neg, "", 1);
+	$$ = st;
+	
+	st->children[0] = $2;
+}
 
 | EXPR OPERATOR_EQUAL EXPR{
 	SyntaxTree* st = SyntaxTree_init(expr_equal, "", 2);
@@ -371,6 +378,12 @@ EXPR: VAR_REFERENCE {
 	
 	st->children[0] = $1;
 	st->children[1] = $3;
+}
+| '!' EXPR{
+	SyntaxTree* st = SyntaxTree_init(expr_not, "", 1);
+	$$ = st;
+	
+	st->children[0] = $2;
 }
 
 

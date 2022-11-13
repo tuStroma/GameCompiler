@@ -13,6 +13,16 @@ ExpressionBool_Value::ExpressionBool_Value(bool val)
 	value = val;
 }
 
+ExpressionBool_Not::ExpressionBool_Not(ExpressionBool* expr)
+{
+	this->expr = expr;
+}
+
+bool ExpressionBool_Not::evaluate()
+{
+	return !expr->evaluate();
+}
+
 ExpressionBool_TwoBoolArgumentsOperation::ExpressionBool_TwoBoolArgumentsOperation(ExpressionBool* a, ExpressionBool* b)
 {
 	expr_a = a;

@@ -12,18 +12,14 @@ STATE
 ]
 (
 [
-	INT a = 0;
-	INT b = 0;
+	INT a = 1;
+	INT b = 2;
 ]
 {
-	a = $.a;
-	b = $.b;
-	WHILE(a != b)
+	IF(!true)
 	{
-		IF(a > b) {a = a-b;}
-		IF(a < b) {b = b-a;}
+		$.result = -$.a;
 	}
-	$.result = a;
 })
 
 MAIN_RULE

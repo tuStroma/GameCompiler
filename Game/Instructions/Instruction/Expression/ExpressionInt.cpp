@@ -13,6 +13,16 @@ ExpressionInt_Value::ExpressionInt_Value(int val)
 	value = val;
 }
 
+ExpressionInt_Neg::ExpressionInt_Neg(ExpressionInt* expr)
+{
+	this->expr = expr;
+}
+
+int ExpressionInt_Neg::evaluate()
+{
+	return -expr->evaluate();
+}
+
 ExpressionInt_TwoArgumentsOperation::ExpressionInt_TwoArgumentsOperation(ExpressionInt* a, ExpressionInt* b)
 {
 	expr_a = a;

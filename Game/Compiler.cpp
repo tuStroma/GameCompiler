@@ -396,6 +396,12 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 		std::string string_val = extract(var_def, 0, "type from VAR_DECLARATION")->text;
 		return new ExpressionInt_Value(stoi(string_val));
 	}
+	case Type::expr_neg:
+	{
+		SyntaxTree* arg_st = extract(input_expression, 0, "EXPR A from EXPR");
+		ExpressionInt* arg = createIntExpression(arg_st, local, state, move);
+		return new ExpressionInt_Neg(arg);
+	}
 	case Type::expr_add:
 	case Type::expr_sub:
 	case Type::expr_mul:
@@ -445,6 +451,12 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 		SyntaxTree* var_def = getElement(input_expression, Type::expr_literal, Type::var_definition);
 		std::string string_val = extract(var_def, 0, "type from VAR_DECLARATION")->text;
 		return new ExpressionBool_Value(string_val == "true");
+	}
+	case Type::expr_not:
+	{
+		SyntaxTree* arg_st = extract(input_expression, 0, "EXPR from EXPR");
+		ExpressionBool* arg = createBoolExpression(arg_st, local, state, move);
+		return new ExpressionBool_Not(arg);
 	}
 	case Type::expr_and:
 	case Type::expr_or:

@@ -122,7 +122,7 @@ TMP {
 }
 
 
-[\[\]{}<>()+\-*/=,;%$#\.] {
+[\[\]{}<>()+\-*/=!,;%$#\.] {
 	yylval.t = SyntaxTree_init(syntax_char, yytext, 0);
 	
 	return yytext[0];

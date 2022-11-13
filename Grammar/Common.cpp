@@ -48,6 +48,7 @@ const char* getTypeName(Type type)
 	case expr_mul:				return "expr_mul";
 	case expr_div:				return "expr_div";
 	case expr_mod:				return "expr_mod";
+	case expr_neg:				return "expr_neg";
 	case expr_equal:			return "expr_equal";
 	case expr_not_equal:		return "expr_not_equal";
 	case expr_less_equal:		return "expr_less_equal";
@@ -56,6 +57,7 @@ const char* getTypeName(Type type)
 	case expr_less:				return "expr_less";
 	case expr_and:				return "expr_and";
 	case expr_or:				return "expr_or";
+	case expr_not:				return "expr_not";
 	case var_reference:			return "var_reference";
 	case local_scope:			return "local_scope";
 	case state_scope:			return "state_scope";

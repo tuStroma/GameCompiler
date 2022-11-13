@@ -34,6 +34,18 @@ public:
 	bool evaluate() override;
 };
 
+// Expression represents negation 
+// of BOOL expression
+class ExpressionBool_Not : public ExpressionBool
+{
+private:
+	ExpressionBool* expr;
+
+public:
+	ExpressionBool_Not(ExpressionBool* expr);
+	bool evaluate() override;
+};
+
 
 // Class agregates two Bool argument operations
 class ExpressionBool_TwoBoolArgumentsOperation : public ExpressionBool

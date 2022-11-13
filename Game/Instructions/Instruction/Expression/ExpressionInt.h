@@ -32,6 +32,18 @@ public:
 	int evaluate() override;
 };
 
+// Expression represents negation
+// of expression
+class ExpressionInt_Neg : public ExpressionInt
+{
+private:
+	ExpressionInt* expr;
+
+public:
+	ExpressionInt_Neg(ExpressionInt* expr);
+	int evaluate() override;
+};
+
 // Class agregates two argument operations
 class ExpressionInt_TwoArgumentsOperation : public ExpressionInt
 {
