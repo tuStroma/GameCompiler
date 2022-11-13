@@ -6,21 +6,24 @@ PLAYERS
 
 STATE 
 [
-	INT a = 1;
-	BOOL b = false;
-	INT c = 5;
+	INT a = 1547;
+	INT b = 1463;
+	INT result = 0;
 ]
-([INT var = 9;]
+(
+[
+	INT a = 0;
+	INT b = 0;
+]
 {
-	IF(true)
+	a = $.a;
+	b = $.b;
+	WHILE(a != b)
 	{
-		IF(true)
-		{
-			$.c = 16;
-		}
-		$.a = 10;
+		IF(a > b) {a = a-b;}
+		IF(a < b) {b = b-a;}
 	}
-	$.c = $.c + 1;
+	$.result = a;
 })
 
 MAIN_RULE

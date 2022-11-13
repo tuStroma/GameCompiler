@@ -218,6 +218,7 @@ Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet*
 	}
 	case Type::return_instr: return createReturnInstruction(typed_instruction, local, state, move, return_var);
 	case Type::if_instr: return createIfInstruction(typed_instruction, local, state, move, return_var, last_instructions);
+	case Type::while_instr: return createWhileInstruction(typed_instruction, local, state, move, return_var, last_instructions);
 	default: break;
 	}
 
@@ -315,6 +316,25 @@ Instruction* Compiler::createIfInstruction(SyntaxTree* input_instruction, DataSe
 	last_instructions.push_back(instr);
 
 	return instr;
+}
+
+Instruction* Compiler::createWhileInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
+{
+	SyntaxTree* condition_st = extract(input_instruction, 0, "EXPR from WHILE_INSTR");	// REFACTOR
+	SyntaxTree* instruction_list_st = extract(input_instruction, 1, "INSTRUCTION_LIST from WHILE_INSTR");	// REFACTOR
+
+	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move);
+	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, return_var, last_instructions);
+
+	InstructionConditionalJump* while_instr = new InstructionConditionalJump(condition, first);
+
+	for (Instruction* instr : last_instructions)
+		instr->setNext(while_instr);
+
+	last_instructions.clear();
+	last_instructions.push_back(while_instr);
+
+	return while_instr;
 }
 
 Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Variable* return_variable, std::list<Instruction*>& predecessors)

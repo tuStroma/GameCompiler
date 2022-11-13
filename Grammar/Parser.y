@@ -32,7 +32,7 @@ SyntaxTree* root;
 			PLAYERS_LIST PLAYER
 			DATA_SET VAR_LIST VAR_DECLARATION VAR_TYPE VAR_DEFINITION
 			INSTRUCTION_BLOCK INSTRUCTION_LIST
-			INSTRUCTION ASSIGN_INSTR RETURN_INSTR IF_INSTR EXPR
+			INSTRUCTION ASSIGN_INSTR RETURN_INSTR IF_INSTR WHILE_INSTR EXPR
 			VAR_REFERENCE SCOPE
 			M_RULE_LIST M_RULE
 			PAYOFF_LIST PAYOFF
@@ -218,6 +218,12 @@ INSTRUCTION: ASSIGN_INSTR {
 	
 	st->children[0] = $1;
 }
+| WHILE_INSTR {
+	SyntaxTree* st = SyntaxTree_init(instruction, "", 1);
+	$$ = st;
+	
+	st->children[0] = $1;
+}
 
 ASSIGN_INSTR: VAR_REFERENCE '=' EXPR ';' {
 	SyntaxTree* st = SyntaxTree_init(assign_instr, "", 2);
@@ -245,6 +251,16 @@ IF_INSTR: KW_IF '(' EXPR ')' '{' INSTRUCTION_LIST '}' {
 	st->children[0] = $3;
 	st->children[1] = $6;
 }
+
+WHILE_INSTR: KW_WHILE '(' EXPR ')' '{' INSTRUCTION_LIST '}' {
+	SyntaxTree* st = SyntaxTree_init(while_instr, "", 2);
+	$$ = st;
+	
+	st->children[0] = $3;
+	st->children[1] = $6;
+}
+
+
 
 EXPR: VAR_REFERENCE {
 	SyntaxTree* st = SyntaxTree_init(expr_ref, "", 1);
