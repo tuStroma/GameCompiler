@@ -130,20 +130,32 @@ void Compiler::setVariable(DataSet* data_set, std::string type, std::string name
 	else std::cout << "Error: unknown type:\t" << type << '\n';
 }
 
+State* Compiler::createState(SyntaxTree* input_state)
+{
+	DataSet* state_data = createDataSet(get_DATA_SET_from_STATE(input_state));
+	InstructionBlock* setup = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(input_state), state_data, NULL, VAR_TYPE::VOID);
+
+	return new State(state_data, setup);
+}
+
 
 // Main components
 
 Game* Compiler::createGame(SyntaxTree* input_game)
 {
+	SyntaxTree* players_st = extract(input_game, 0, "PLAYERS from GAME");
 	SyntaxTree* state_st = get_STATE_from_GAME(input_game);
+	SyntaxTree* main_rule_st = extract(input_game, 2, "MAIN_RULE from GAME");
+	SyntaxTree* moves_st = extract(input_game, 3, "MOVES from GAME");
 
-	DataSet* state = createDataSet(get_DATA_SET_from_STATE(state_st));
-	InstructionBlock* IB = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(state_st), state, NULL, VAR_TYPE::VOID);
+	std::list<Player*> players = createPlayersList(players_st);
+	State* state = createState(state_st);
 
-	IB->RunBlock();
+	state->setupState();
 	state->print();
+	for (Player* p : players) p->print();
 
-	Game* game = new Game(state);
+	Game* game = new Game();
 	return game;
 }
 
@@ -184,6 +196,36 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_data_set)
 	}
 
 	return data_set;
+}
+
+std::list<Player*> Compiler::createPlayersList(SyntaxTree* input_players)
+{
+	SyntaxTree* players_list_st = extract(input_players, 0, "PLAYERS_LIST from PLAYERS");
+
+	std::list<Player*>* players = new std::list<Player*>();
+
+	while (true)
+	{
+		SyntaxTree* player_class_st = extract(players_list_st, 0, "PLAYER from PLYERS_LIST");
+		addPlayerClass(player_class_st, players);
+
+		if (players_list_st->children_num == 2)
+			players_list_st = extract(players_list_st, 1, "PLAYERS_LIST from PLYERS_LIST");
+
+		else break;
+	}
+
+
+	return *players;
+}
+
+void Compiler::addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>* players)
+{
+	std::string identifier = extract(input_player_class, 0, "IDENTIFIER from PLAYER_CLASS")->text;
+	int class_size = std::stoi(extract(input_player_class, 1, "CLASS_SIZE from PLAYER_CLASS")->text);
+
+	for (int i = 0; i < class_size; i++)
+		players->push_back(new Player(identifier, i));
 }
 
 InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type)

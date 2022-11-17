@@ -1,13 +1,15 @@
 #pragma once
 #include "DataSet/DataSet.h"
+#include "Player/Player.h"
 #include "Instructions/InstructionBlock.h"
+#include "GameComponents/State.h"
 
 class Game
 {
 private:
-	DataSet* state;
+	State* state;
 
 public:
-	Game(DataSet* state);
+	Game();
 };
 

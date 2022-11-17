@@ -71,6 +71,9 @@ private:
 
 	// Main components //
 
+
+	State* createState(SyntaxTree* input_state);
+
 	// Takes STATE part of syntax tree as an input
 	// Structure of STATE is:
 	//
@@ -79,6 +82,10 @@ private:
 	//                      -> VAR_DECLARATION
 	//                         VAR_LIST
 	DataSet* createDataSet(SyntaxTree* input_data_set);
+
+	std::list<Player*> createPlayersList(SyntaxTree* input_players);
+
+	void addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>* players);
 
 
 	// Instructions //

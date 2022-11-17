@@ -13,9 +13,6 @@ private:
 
 	Instruction* entry_point;
 
-	//void* return_ptr = NULL;
-	//VAR_TYPE return_type;
-
 	Variable* return_value;
 
 public:

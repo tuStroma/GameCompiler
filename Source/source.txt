@@ -1,13 +1,13 @@
 PLAYERS
 [
-	players[4];
-	masters[2];
+	player[4];
+	master[2];
 ]
 
 STATE 
 [
-	INT a = 1547;
-	INT b = 1463;
+	INT a = 15;
+	INT b = 10;
 	INT result = 0;
 ]
 (
@@ -16,10 +16,14 @@ STATE
 	INT b = 2;
 ]
 {
-	IF(!true)
+	a = $.a;
+	b = $.b;
+	WHILE(a != b)
 	{
-		$.result = -$.a;
+		IF(a > b) {a = a-b;}
+		IF(a < b) {b = b-a;}
 	}
+	$.result = a;
 })
 
 MAIN_RULE
