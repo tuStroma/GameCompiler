@@ -133,7 +133,7 @@ void Compiler::setVariable(DataSet* data_set, std::string type, std::string name
 State* Compiler::createState(SyntaxTree* input_state)
 {
 	DataSet* state_data = createDataSet(get_DATA_SET_from_STATE(input_state));
-	InstructionBlock* setup = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(input_state), state_data, NULL, NULL, VAR_TYPE::VOID);
+	InstructionBlock* setup = createInstructionBlock(get_INSTRUCTION_BLOCK_from_STATE(input_state), state_data, NULL, VAR_TYPE::VOID);
 
 	return new State(state_data, setup);
 }
@@ -232,7 +232,7 @@ void Compiler::addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>
 		players->push_back(new Player(identifier, i));
 }
 
-InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, Player* player, VAR_TYPE return_type)
+InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type)
 {
 	SyntaxTree* local_data = getElement(input_instruction_block, Type::instruction_block, Type::data_set);
 	SyntaxTree* instruction_list = extract(input_instruction_block, 1, "INSTRUCTION_LIST from INSTRUCTION_BLOCK");	// REFACTOR
@@ -244,28 +244,32 @@ InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction
 
 	// Create Instruction graph
 	std::list<Instruction*> last_instructions;
-	Instruction* entry = createInstructionGraph(instruction_list, local, state, move, player, instruction_block->getReturnVariable(), last_instructions);
+	Instruction* entry = createInstructionGraph(instruction_list, local, state, move, instruction_block->getReturnVariable(), last_instructions);
 
 	instruction_block->setEntryPoint(entry);
 	
 	return instruction_block;
 }
 
-Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions)
+Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
 {
 	SyntaxTree* typed_instruction = getSingleElement(input_instruction, Type::instruction);
 
 	switch (typed_instruction->type)
 	{
 	case Type::assign_instr: {
-		Instruction* instr = createAssignInstruction(typed_instruction, local, state, move, player);
+		Instruction* instr = createAssignInstruction(typed_instruction, local, state, move);
 		last_instructions.push_back(instr);
 		return instr;
 	}
-	case Type::return_instr: return createReturnInstruction(typed_instruction, local, state, move, player, return_var);
-	case Type::if_instr: return createIfInstruction(typed_instruction, local, state, move, player, return_var, last_instructions);
-	case Type::while_instr: return createWhileInstruction(typed_instruction, local, state, move, player, return_var, last_instructions);
-	case Type::next_player_instr: return createNextPlayerInstruction(typed_instruction, local, state, move, player);
+	case Type::next_player_instr: {
+		Instruction* instr = createNextPlayerInstruction(typed_instruction, local, state, move);
+		last_instructions.push_back(instr);
+		return instr;
+	}
+	case Type::return_instr: return createReturnInstruction(typed_instruction, local, state, move, return_var);
+	case Type::if_instr: return createIfInstruction(typed_instruction, local, state, move, return_var, last_instructions);
+	case Type::while_instr: return createWhileInstruction(typed_instruction, local, state, move, return_var, last_instructions);
 	default: break;
 	}
 	
@@ -274,7 +278,7 @@ Instruction* Compiler::createInstruction(SyntaxTree* input_instruction, DataSet*
 	return nullptr;
 }
 
-Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player)
+Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move)
 {
 	SyntaxTree* variable_reference_st = getElement(input_instruction, Type::assign_instr, Type::var_reference);
 	SyntaxTree* expression_st = extract(input_instruction, 1, "EXPR from ASSIGN_INSTR");	// REFACTOR
@@ -294,12 +298,12 @@ Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, Da
 	{
 	case VAR_TYPE::INT: 
 	{
-		ExpressionInt* expr = createIntExpression(expression_st, local, state, move, player);
+		ExpressionInt* expr = createIntExpression(expression_st, local, state, move);
 		return new InstructionAssignInt(to, expr);
 	}
 	case VAR_TYPE::BOOL: 
 	{
-		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move, player);
+		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move);
 		return new InstructionAssignBool(to, expr);
 	}
 	default: {
@@ -311,7 +315,7 @@ Instruction* Compiler::createAssignInstruction(SyntaxTree* input_instruction, Da
 	return nullptr;
 }
 
-Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var)
+Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var)
 {
 	bool returns_value = input_instruction->children_num == 1;
 	SyntaxTree* expression_st = NULL;
@@ -334,7 +338,7 @@ Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, Da
 			std::cout << "Warnig: No return value, should be VOID\n";
 			return NULL;
 		}
-		ExpressionInt* expr = createIntExpression(expression_st, local, state, move, player);
+		ExpressionInt* expr = createIntExpression(expression_st, local, state, move);
 		return new InstructionReturnInt(expr, return_var);
 	}
 	case VAR_TYPE::BOOL: {
@@ -343,7 +347,7 @@ Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, Da
 			std::cout << "Warnig: No return value, should be VOID\n";
 			return NULL;
 		}
-		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move, player);
+		ExpressionBool* expr = createBoolExpression(expression_st, local, state, move);
 		return new InstructionReturnBool(expr, return_var);
 	}
 	default: break;
@@ -352,13 +356,13 @@ Instruction* Compiler::createReturnInstruction(SyntaxTree* input_instruction, Da
 	return nullptr;
 }
 
-Instruction* Compiler::createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions)
+Instruction* Compiler::createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
 {
 	SyntaxTree* condition_st = extract(input_instruction, 0, "EXPR from IF_INSTR");	// REFACTOR
 	SyntaxTree* instruction_list_st = extract(input_instruction, 1, "INSTRUCTION_LIST from IF_INSTR");	// REFACTOR
 
-	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move, player);
-	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, player, return_var, last_instructions);
+	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move);
+	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, return_var, last_instructions);
 
 	InstructionConditionalJump* instr = new InstructionConditionalJump(condition, first);
 
@@ -367,13 +371,13 @@ Instruction* Compiler::createIfInstruction(SyntaxTree* input_instruction, DataSe
 	return instr;
 }
 
-Instruction* Compiler::createWhileInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions)
+Instruction* Compiler::createWhileInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions)
 {
 	SyntaxTree* condition_st = extract(input_instruction, 0, "EXPR from WHILE_INSTR");	// REFACTOR
 	SyntaxTree* instruction_list_st = extract(input_instruction, 1, "INSTRUCTION_LIST from WHILE_INSTR");	// REFACTOR
 
-	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move, player);
-	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, player, return_var, last_instructions);
+	ExpressionBool* condition = createBoolExpression(condition_st, local, state, move);
+	Instruction* first = createInstructionGraph(instruction_list_st, local, state, move, return_var, last_instructions);
 
 	InstructionConditionalJump* while_instr = new InstructionConditionalJump(condition, first);
 
@@ -386,20 +390,20 @@ Instruction* Compiler::createWhileInstruction(SyntaxTree* input_instruction, Dat
 	return while_instr;
 }
 
-Instruction* Compiler::createNextPlayerInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player)
+Instruction* Compiler::createNextPlayerInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move)
 {
 	SyntaxTree* identifier_st = extract(input_instruction, 0, "IDENTIFIER from NEXT_PLAYER_INSTR");	// REFACTOR
 	SyntaxTree* player_id_expr_st = extract(input_instruction, 1, "EXPR from NEXT_PLAYER_INSTR");	// REFACTOR
 
 	std::string type = identifier_st->text;
-	ExpressionInt* id_expr = createIntExpression(player_id_expr_st, local, state, move, player);
+	ExpressionInt* id_expr = createIntExpression(player_id_expr_st, local, state, move);
 
 	// No check if NEW_PLYER_INSTR is available in current block
 
 	return new InstructionNextPlayer(players_set, type, id_expr);
 }
 
-Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_variable, std::list<Instruction*>& predecessors)
+Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Variable* return_variable, std::list<Instruction*>& predecessors)
 {
 	Instruction* entry = NULL;
 	//Instruction* previous_instr = NULL;
@@ -411,7 +415,7 @@ Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list
 		input_instruction_list = extract(input_instruction_list, 1, "INSTRUCTION_LIST from INSTRUCTION_LIST");	// REFACTOR
 
 		last_instructions.clear();
-		Instruction* next_instr = createInstruction(instruction_st, local, state, move, player, return_variable, last_instructions);
+		Instruction* next_instr = createInstruction(instruction_st, local, state, move, return_variable, last_instructions);
 
 		if (entry == NULL)
 		{
@@ -432,24 +436,18 @@ Instruction* Compiler::createInstructionGraph(SyntaxTree* input_instruction_list
 	return entry;
 }
 
-ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move, Player* player)
+ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move)
 {
 	switch (input_expression->type)
 	{
 	case Type::expr: 
 	{
 		SyntaxTree* next_expr = extract(input_expression, 0, "EXPR from EXPR");	// REFACTOR
-		return createIntExpression(next_expr, local, state, move, player);
+		return createIntExpression(next_expr, local, state, move);
 	}
 	case Type::expr_player_index:
 	{
-		if (player)
-			return new ExpressionInt_Value(player->getId()); // Set player index
-		else
-		{
-			std::cout << "Warnig: Player is not defined in this scope";
-			return NULL;
-		}
+		return new ExpressionInt_PlayerIndex(players_set);
 	}
 	case Type::expr_ref:
 	{
@@ -468,7 +466,7 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 	case Type::expr_neg:
 	{
 		SyntaxTree* arg_st = extract(input_expression, 0, "EXPR A from EXPR");
-		ExpressionInt* arg = createIntExpression(arg_st, local, state, move, player);
+		ExpressionInt* arg = createIntExpression(arg_st, local, state, move);
 		return new ExpressionInt_Neg(arg);
 	}
 	case Type::expr_add:
@@ -480,8 +478,8 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 		SyntaxTree* arg_a_st = extract(input_expression, 0, "EXPR A from EXPR");
 		SyntaxTree* arg_b_st = extract(input_expression, 1, "EXPR B from EXPR");
 
-		ExpressionInt* a = createIntExpression(arg_a_st, local, state, move, player);
-		ExpressionInt* b = createIntExpression(arg_b_st, local, state, move, player);
+		ExpressionInt* a = createIntExpression(arg_a_st, local, state, move);
+		ExpressionInt* b = createIntExpression(arg_b_st, local, state, move);
 
 		switch (input_expression->type)
 		{
@@ -498,14 +496,14 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 	return nullptr;
 }
 
-ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move, Player* player)
+ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move)
 {
 	switch (input_expression->type)
 	{
 	case Type::expr:
 	{
 		SyntaxTree* next_expr = extract(input_expression, 0, "EXPR from EXPR");	// REFACTOR
-		return createBoolExpression(next_expr, local, state, move, player);
+		return createBoolExpression(next_expr, local, state, move);
 	}
 	case Type::expr_ref:
 	{
@@ -524,7 +522,7 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 	case Type::expr_not:
 	{
 		SyntaxTree* arg_st = extract(input_expression, 0, "EXPR from EXPR");
-		ExpressionBool* arg = createBoolExpression(arg_st, local, state, move, player);
+		ExpressionBool* arg = createBoolExpression(arg_st, local, state, move);
 		return new ExpressionBool_Not(arg);
 	}
 	case Type::expr_and:
@@ -533,8 +531,8 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 		SyntaxTree* arg_a_st = extract(input_expression, 0, "EXPR A from EXPR");
 		SyntaxTree* arg_b_st = extract(input_expression, 1, "EXPR B from EXPR");
 
-		ExpressionBool* a = createBoolExpression(arg_a_st, local, state, move, player);
-		ExpressionBool* b = createBoolExpression(arg_b_st, local, state, move, player);
+		ExpressionBool* a = createBoolExpression(arg_a_st, local, state, move);
+		ExpressionBool* b = createBoolExpression(arg_b_st, local, state, move);
 
 		switch (input_expression->type)
 		{
@@ -552,8 +550,8 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 		SyntaxTree* arg_a_st = extract(input_expression, 0, "EXPR A from EXPR");
 		SyntaxTree* arg_b_st = extract(input_expression, 1, "EXPR B from EXPR");
 
-		ExpressionInt* a = createIntExpression(arg_a_st, local, state, move, player);
-		ExpressionInt* b = createIntExpression(arg_b_st, local, state, move, player);
+		ExpressionInt* a = createIntExpression(arg_a_st, local, state, move);
+		ExpressionInt* b = createIntExpression(arg_b_st, local, state, move);
 
 		switch (input_expression->type)
 		{

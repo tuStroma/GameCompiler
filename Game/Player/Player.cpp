@@ -20,7 +20,7 @@ void Player::print()
 }
 
 PlayersSet::PlayersSet(std::list<Player*> players)
-	: players(players), next_player(NULL)
+	: players(players), on_move(NULL)
 {
 	if (players.size() == 0)
 	{
@@ -28,7 +28,7 @@ PlayersSet::PlayersSet(std::list<Player*> players)
 		return;
 	}
 
-	next_player = players.front();
+	on_move = players.front();
 }
 
 void PlayersSet::setNextPlayer(std::string type, int id)
@@ -38,23 +38,23 @@ void PlayersSet::setNextPlayer(std::string type, int id)
 	{
 		if (p->getId() == id && p->getType() == type)
 		{
-			next_player = p;
+			on_move = p;
 			return;
 		}
 	}
 
 	std::cout << "Execution Error: Player does not exist: " << type << '[' << id << "]\n";
-	next_player = NULL;
+	on_move = NULL;
 }
 
-Player* PlayersSet::getNextPlayer()
+Player* PlayersSet::getCurrentPlayer()
 {
-	return next_player;
+	return on_move;
 }
 
 void PlayersSet::print()
 {
-	next_player->print();
+	on_move->print();
 	std::cout << '\n';
 
 	for (Player* p : players) p->print();

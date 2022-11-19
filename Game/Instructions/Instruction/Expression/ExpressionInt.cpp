@@ -13,6 +13,16 @@ ExpressionInt_Value::ExpressionInt_Value(int val)
 	value = val;
 }
 
+ExpressionInt_PlayerIndex::ExpressionInt_PlayerIndex(PlayersSet* players)
+{
+	this->players = players;
+}
+
+int ExpressionInt_PlayerIndex::evaluate()
+{
+	return players->getCurrentPlayer()->getId();
+}
+
 ExpressionInt_Neg::ExpressionInt_Neg(ExpressionInt* expr)
 {
 	this->expr = expr;

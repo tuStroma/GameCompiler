@@ -23,13 +23,13 @@ class PlayersSet
 {
 private:
 	std::list<Player*> players;
-	Player* next_player;
+	Player* on_move;
 
 public:
 	PlayersSet(std::list<Player*> players);
 
 	void setNextPlayer(std::string type, int id);
-	Player* getNextPlayer();
+	Player* getCurrentPlayer();
 
 	void print();
 };

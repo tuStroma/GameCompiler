@@ -1,4 +1,7 @@
 #pragma once
+
+#include "../../../Player/Player.h"
+
 class ExpressionInt
 {
 public:
@@ -29,6 +32,18 @@ private:
 
 public:
 	ExpressionInt_Value(int val);
+	int evaluate() override;
+};
+
+// Expression represents an 
+// index of current player
+class ExpressionInt_PlayerIndex : public ExpressionInt
+{
+private:
+	PlayersSet* players;
+
+public:
+	ExpressionInt_PlayerIndex(PlayersSet* players);
 	int evaluate() override;
 };
 

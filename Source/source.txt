@@ -9,6 +9,8 @@ STATE
 	INT a = 15;
 	INT b = 10;
 	INT result = 0;
+	INT pl_1 = 0;
+	INT pl_2 = 0;
 ]
 (
 [
@@ -24,7 +26,9 @@ STATE
 		IF(a < b) {b = b-a;}
 	}
 	$.result = a;
-	& = master[1];
+	$.pl_1 = &;
+	& = player[3];
+	$.pl_2 = &;
 })
 
 MAIN_RULE
