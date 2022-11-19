@@ -290,7 +290,7 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 #define YY_END_OF_BUFFER 24
 static yyconst short int yy_accept[85] =
     {   0,
-        0,    0,   24,   23,   22,   21,   21,   23,   16,   21,
+        0,    0,   24,   23,   22,   21,   21,   21,   16,   21,
        21,   21,   20,   20,   20,   20,   20,   20,   20,   20,
        20,   20,   20,   23,   11,   14,   16,   12,   10,   13,
        20,   20,    8,   20,   20,   20,   20,   20,   20,   20,

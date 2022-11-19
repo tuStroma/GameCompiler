@@ -5,6 +5,7 @@
 #include "Instruction/InstructionAssign.h"
 #include "Instruction/InstructionReturn.h"
 #include "Instruction/InstructionConditionalJump.h"
+#include "Instruction/InstructionNextPlayer.h"
 #include "../DataSet/DataSet.h"
 
 class InstructionBlock

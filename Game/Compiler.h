@@ -8,6 +8,9 @@
 class Compiler
 {
 private:
+	Game* game_object;
+	PlayersSet* players_set;
+
 
 	bool nullCheck(SyntaxTree* ptr, std::string warning);
 
@@ -90,17 +93,18 @@ private:
 
 	// Instructions //
 
-	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type);
+	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, Player* player, VAR_TYPE return_type);
 
-	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions);
-	Instruction* createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move);
-	Instruction* createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var);
-	Instruction* createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions);
-	Instruction* createWhileInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Variable* return_var, std::list<Instruction*>& last_instructions);
+	Instruction* createInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions);
+	Instruction* createAssignInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player);
+	Instruction* createReturnInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var);
+	Instruction* createIfInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions);
+	Instruction* createWhileInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_var, std::list<Instruction*>& last_instructions);
+	Instruction* createNextPlayerInstruction(SyntaxTree* input_instruction, DataSet* local, DataSet* state, DataSet* move, Player* player);
 
-	Instruction* createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Variable* return_variable, std::list<Instruction*>& predecessors);
-	ExpressionInt* createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
-	ExpressionBool* createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move);
+	Instruction* createInstructionGraph(SyntaxTree* input_instruction_list, DataSet* local, DataSet* state, DataSet* move, Player* player, Variable* return_variable, std::list<Instruction*>& predecessors);
+	ExpressionInt* createIntExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move, Player* player);
+	ExpressionBool* createBoolExpression(SyntaxTree* input_expression, DataSet* local, DataSet* state, DataSet* move, Player* player);
 
 	void* getIdentifierReference(SyntaxTree* var_reference, VAR_TYPE required_type, DataSet* local, DataSet* state, DataSet* move);
 	DataSet* getScope(Type type, DataSet* local, DataSet* state, DataSet* move);

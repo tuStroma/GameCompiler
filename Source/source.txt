@@ -24,6 +24,7 @@ STATE
 		IF(a < b) {b = b-a;}
 	}
 	$.result = a;
+	& = master[1];
 })
 
 MAIN_RULE

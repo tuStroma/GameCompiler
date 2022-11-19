@@ -40,7 +40,9 @@ const char* getTypeName(Type type)
 	case return_instr:			return "return_instr";
 	case if_instr:				return "if_instr";
 	case while_instr:			return "while_instr";
+	case next_player_instr:		return "next_player_instr";
 	case expr:					return "expr";
+	case expr_player_index:		return "expr_player_index";
 	case expr_ref:				return "expr_ref";
 	case expr_literal:			return "expr_literal";
 	case expr_add:				return "expr_add";

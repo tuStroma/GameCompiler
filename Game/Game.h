@@ -7,9 +7,15 @@
 class Game
 {
 private:
+	PlayersSet* players;
 	State* state;
+
 
 public:
 	Game();
+
+	void setPlayers(PlayersSet* players);
+
+	void print();
 };
 
