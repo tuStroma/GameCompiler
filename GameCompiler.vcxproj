@@ -26,6 +26,8 @@
     <ClCompile Include="Game\GameComponents\MainRule.cpp" />
     <ClCompile Include="Game\GameComponents\MainRule\EndRule.cpp" />
     <ClCompile Include="Game\GameComponents\MainRule\Payoff.cpp" />
+    <ClCompile Include="Game\GameComponents\Moves.cpp" />
+    <ClCompile Include="Game\GameComponents\Moves\Move.cpp" />
     <ClCompile Include="Game\GameComponents\State.cpp" />
     <ClCompile Include="Game\Instructions\InstructionBlock.cpp" />
     <ClCompile Include="Game\Instructions\Instruction\Expression\ExpressionBool.cpp" />
@@ -49,6 +51,8 @@
     <ClInclude Include="Game\GameComponents\MainRule.h" />
     <ClInclude Include="Game\GameComponents\MainRule\EndRule.h" />
     <ClInclude Include="Game\GameComponents\MainRule\Payoff.h" />
+    <ClInclude Include="Game\GameComponents\Moves.h" />
+    <ClInclude Include="Game\GameComponents\Moves\Move.h" />
     <ClInclude Include="Game\GameComponents\State.h" />
     <ClInclude Include="Game\Instructions\InstructionBlock.h" />
     <ClInclude Include="Game\Instructions\Instruction\Expression\ExpressionBool.h" />

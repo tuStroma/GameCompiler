@@ -4,6 +4,7 @@
 #include "Instructions/InstructionBlock.h"
 #include "GameComponents/State.h"
 #include "GameComponents/MainRule.h"
+#include "GameComponents/Moves.h"
 
 class Game
 {

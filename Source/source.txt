@@ -43,14 +43,14 @@ MAIN_RULE
 
 MOVES
 [
-	m1<*> [ INT a = 0;] ([]{ RETURN; })
+	m1<*> [ INT a = 0;] ([]{ RETURN true; })
 	[]
 	{
 		RETURN;
 	}
 	%
-	m2<masters> [ BOOL b = false; ] ([]{ RETURN; })
-	[]
+	m2<masters> [ BOOL b = false; ] ([]{ RETURN true; })
+	[INT a = 0;]
 	{
 		a = a > b || w >= 7 && 8 != a; 
 	}

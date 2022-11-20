@@ -66,6 +66,15 @@ private:
 	EndRule* createEndRule(SyntaxTree* input_end_rule);
 	Payoff* createPayoff(SyntaxTree* input_payoff);
 
+
+	// Moves //
+
+	Moves* createMoves(SyntaxTree* input_moves);
+	Move* createMove(SyntaxTree* input_move);
+	std::list<std::string> createPlayersScope(SyntaxTree* input_players_scope);
+	std::list<std::string> getPlayersClasses();
+
+
 	// Instructions //
 
 	InstructionBlock* createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type);

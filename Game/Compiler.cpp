@@ -156,6 +156,8 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 
 	MainRule* main_rule = createMainRule(main_rule_st);
 
+	Moves* moves = createMoves(moves_st);
+
 
 	state->setupState();
 	main_rule->Run();
@@ -294,6 +296,92 @@ Payoff* Compiler::createPayoff(SyntaxTree* input_payoff)
 	InstructionBlock* payoff_block = createInstructionBlock(payoff_st, state->getData(), NULL, VAR_TYPE::INT);
 
 	return new Payoff(player_class, payoff_block);
+}
+
+Moves* Compiler::createMoves(SyntaxTree* input_moves)
+{
+	SyntaxTree* move_list_st = extract(input_moves, 0, "MOVE_LIST from MOVES");
+
+	std::list<Move*> move_list;
+
+	while (true)
+	{
+		SyntaxTree* move_st = extract(move_list_st, 0, "MOVE from MOVE_LIST");
+		Move* move = createMove(move_st);
+		move_list.push_back(move);
+
+		if (move_list_st->children_num == 2)
+			move_list_st = extract(move_list_st, 1, "MOVE_LIST from MOVE_LIST");
+
+		else break;
+	}
+
+	return new Moves(move_list);
+}
+
+Move* Compiler::createMove(SyntaxTree* input_move)
+{
+	SyntaxTree* identifier_st = extract(input_move, 0, "IDENTIFIER from MOVE");
+	SyntaxTree* players_scope_st = extract(input_move, 1, "PLAYERS_SCOPE from MOVE");
+	SyntaxTree* move_data_st = extract(input_move, 2, "DATA_SET from MOVE");
+	SyntaxTree* validation_st = extract(input_move, 3, "INSTRUCTION_BLOCK from MOVE");
+	SyntaxTree* execution_st = extract(input_move, 4, "INSTRUCTION_BLOCK from MOVE");
+
+	std::string name = identifier_st->text;
+	std::list<std::string> players_scope = createPlayersScope(players_scope_st);
+	DataSet* move_data = createDataSet(move_data_st);
+	InstructionBlock* validation = createInstructionBlock(validation_st, state->getData(), move_data, VAR_TYPE::BOOL);
+	InstructionBlock* move_execution = createInstructionBlock(execution_st, state->getData(), move_data, VAR_TYPE::VOID);
+
+	return new Move(name, players_scope, move_data, validation, move_execution);
+}
+
+std::list<std::string> Compiler::createPlayersScope(SyntaxTree* input_players_scope)
+{
+	if (input_players_scope->children_num == 0) // Add all player classes
+		return getPlayersClasses();
+
+
+	SyntaxTree* identifier_list_st = extract(input_players_scope, 0, "IDENTIFIER_LIST from PLAYERS_SCOPE");
+
+	std::list<std::string> players_scope; 
+	
+	while (true)
+	{
+		SyntaxTree* identifier_st = extract(identifier_list_st, 0, "IDENTIFIER from IDENTIFIER_LIST");
+		players_scope.push_back(identifier_st->text);
+
+		if (identifier_list_st->children_num == 2)
+			identifier_list_st = extract(identifier_list_st, 1, "IDENTIFIER_LIST from IDENTIFIER_LIST");
+
+		else break;
+	}
+
+	return players_scope;
+}
+
+std::list<std::string> Compiler::getPlayersClasses()
+{
+	std::list<std::string> all_classes;
+
+	std::list<Player*> players_list = players_set->getPlayersList();
+	for (Player* player : players_list)
+	{
+		bool exists = false;
+		for (std::string from_scope : all_classes)
+		{
+			if (player->getType() == from_scope)
+			{
+				exists = true;
+				break;
+			}
+		}
+
+		if (!exists)
+			all_classes.push_back(player->getType());
+	}
+
+	return all_classes;
 }
 
 InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type)
@@ -554,7 +642,9 @@ ExpressionInt* Compiler::createIntExpression(SyntaxTree* input_expression, DataS
 		case Type::expr_mod: return new ExpressionInt_Mod(a, b);
 		}
 	}
-	default: break;
+	default: 
+		std::cout << "Error: Invalid operator \"" << getTypeName(input_expression->type) << "\" in INT expression\n";
+		break;
 	}
 
 	return nullptr;
@@ -627,7 +717,9 @@ ExpressionBool* Compiler::createBoolExpression(SyntaxTree* input_expression, Dat
 		case Type::expr_less:			return new ExpressionBool_Less(a, b);
 		}
 	}
-	default: break;
+	default:
+		std::cout << "Error: Invalid operator \"" << getTypeName(input_expression->type) << "\" in BOOL expression\n"; 
+		break;
 	}
 
 	return nullptr;
