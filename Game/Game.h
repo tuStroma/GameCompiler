@@ -3,6 +3,7 @@
 #include "Player/Player.h"
 #include "Instructions/InstructionBlock.h"
 #include "GameComponents/State.h"
+#include "GameComponents/MainRule.h"
 
 class Game
 {

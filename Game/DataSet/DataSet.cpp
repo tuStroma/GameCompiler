@@ -40,7 +40,7 @@ void* DataSet::getValuePtr(std::string name)
 {
 	if (!exist(name))
 	{
-		std::cout << "not found\n";
+		std::cout << "Warning: Not found identifier \"" << name << "\" in scope\n";
 		return nullptr;
 	}
 
@@ -52,7 +52,7 @@ VAR_TYPE DataSet::getValueType(std::string name)
 {
 	if (!exist(name))
 	{
-		std::cout << "not found\n";
+		std::cout << "Warning: Not found identifier \"" << name << "\" in scope\n";
 		return VAR_TYPE::UNKNOWN;
 	}
 

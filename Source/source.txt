@@ -35,10 +35,10 @@ MAIN_RULE
 [
 	r1
 	([]{ RETURN true; }) 
-	players
+	player
 	[]{RETURN 1;}
-	masters
-	[]{#.a = 2; RETURN a;}
+	master
+	[INT a = 0;]{a = 2; RETURN a;}
 ]
 
 MOVES

@@ -10,6 +10,7 @@ class Compiler
 private:
 	Game* game_object;
 	PlayersSet* players_set;
+	State* state;
 
 
 	bool nullCheck(SyntaxTree* ptr, std::string warning);
@@ -39,32 +40,6 @@ private:
 	std::string get_identifier_from_VAR_DECLARATION(SyntaxTree* var_declaration);
 	std::string get_value_from_VAR_DECLARATION(SyntaxTree* var_declaration);
 
-	// Extract INSTRUCTION_BLOCK
-	SyntaxTree* get_DATA_SET_from_INSTRUCTION_BLOCK(SyntaxTree* state);
-	SyntaxTree* get_INSTRUCTION_LIST_from_INSTRUCTION_BLOCK(SyntaxTree* state);
-
-	// Extract INSTRUCTION_LIST
-	SyntaxTree* get_INSTRUCTION_LIST_from_INSTRUCTION_LIST(SyntaxTree* state);
-	SyntaxTree* get_INSTRUCTION_from_INSTRUCTION_LIST(SyntaxTree* state);
-
-	// Extract INSTRUCTION
-	SyntaxTree* get_INSTRUCTION_type_from_INSTRUCTION(SyntaxTree* state);
-
-	// Extract ASSIGN_INSTR
-	SyntaxTree* get_VAR_REFERENCE_from_ASSIGN_INSTR(SyntaxTree* state);
-	SyntaxTree* get_EXPR_from_ASSIGN_INSTR(SyntaxTree* state);
-
-	// Extract VAR_REFERENCE
-	SyntaxTree* get_SCOPE_from_VAR_REFERENCE(SyntaxTree* state);
-	SyntaxTree* get_IDENTIFIER_from_VAR_REFERENCE(SyntaxTree* state);
-
-	// Extract EXPR
-	SyntaxTree* get_VAR_REFERENCE_from_EXPR(SyntaxTree* state);
-	SyntaxTree* get_VAR_DEFINITION_from_EXPR(SyntaxTree* state);
-	SyntaxTree* get_EXPR_from_EXPR(SyntaxTree* state);
-
-
-
 
 
 	// Data functions
@@ -78,18 +53,18 @@ private:
 	State* createState(SyntaxTree* input_state);
 
 	// Takes STATE part of syntax tree as an input
-	// Structure of STATE is:
-	//
-	// DATA_SET -> VAR_LIST -> VAR_DECLARATION
-	//						|
-	//                      -> VAR_DECLARATION
-	//                         VAR_LIST
 	DataSet* createDataSet(SyntaxTree* input_data_set);
 
-	std::list<Player*> createPlayersList(SyntaxTree* input_players);
+	// Players
+	PlayersSet* createPlayers(SyntaxTree* input_players);
+	void addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>& players);
 
-	void addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>* players);
 
+	// Main Rule //
+
+	MainRule* createMainRule(SyntaxTree* input_main_rule);
+	EndRule* createEndRule(SyntaxTree* input_end_rule);
+	Payoff* createPayoff(SyntaxTree* input_payoff);
 
 	// Instructions //
 
@@ -111,11 +86,6 @@ private:
 
 public:
 	// Takes as an input all syntax tree
-	// Its main parts are:
-	//
-	// MAIN_RULE
-	// STATE 
-	// MOVES
 	Game* createGame(SyntaxTree* input_game);
 };
 

@@ -148,17 +148,23 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 	SyntaxTree* main_rule_st = extract(input_game, 2, "MAIN_RULE from GAME");
 	SyntaxTree* moves_st = extract(input_game, 3, "MOVES from GAME");
 
-	game_object = new Game();
 
-	std::list<Player*> players = createPlayersList(players_st);
-	players_set = new PlayersSet(players);
 
-	game_object->setPlayers(players_set);
-	State* state = createState(state_st);
+	players_set = createPlayers(players_st);
+
+	state = createState(state_st);
+
+	MainRule* main_rule = createMainRule(main_rule_st);
+
 
 	state->setupState();
+	main_rule->Run();
 	state->print();
 	players_set->print();
+
+
+	game_object = new Game();
+	game_object->setPlayers(players_set);
 
 	return game_object;
 }
@@ -202,11 +208,11 @@ DataSet* Compiler::createDataSet(SyntaxTree* input_data_set)
 	return data_set;
 }
 
-std::list<Player*> Compiler::createPlayersList(SyntaxTree* input_players)
+PlayersSet* Compiler::createPlayers(SyntaxTree* input_players)
 {
 	SyntaxTree* players_list_st = extract(input_players, 0, "PLAYERS_LIST from PLAYERS");
 
-	std::list<Player*>* players = new std::list<Player*>();
+	std::list<Player*> players = std::list<Player*>();
 
 	while (true)
 	{
@@ -220,16 +226,74 @@ std::list<Player*> Compiler::createPlayersList(SyntaxTree* input_players)
 	}
 
 
-	return *players;
+	return new PlayersSet(players);
 }
 
-void Compiler::addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>* players)
+void Compiler::addPlayerClass(SyntaxTree* input_player_class, std::list<Player*>& players)
 {
 	std::string identifier = extract(input_player_class, 0, "IDENTIFIER from PLAYER_CLASS")->text;
 	int class_size = std::stoi(extract(input_player_class, 1, "CLASS_SIZE from PLAYER_CLASS")->text);
 
 	for (int i = 0; i < class_size; i++)
-		players->push_back(new Player(identifier, i));
+		players.push_back(new Player(identifier, i));
+}
+
+MainRule* Compiler::createMainRule(SyntaxTree* input_main_rule)
+{
+	SyntaxTree* end_rule_list_st = extract(input_main_rule, 0, "MAIN_RULE_LIST from MAIN_RULE");
+
+	std::list<EndRule*> end_rule_list;
+
+	while (true)
+	{
+		SyntaxTree* end_rule_st = extract(end_rule_list_st, 0, "END_RULE from END_RULE_LIST");
+		EndRule* end_rule = createEndRule(end_rule_st);
+		end_rule_list.push_back(end_rule);
+
+		if (end_rule_list_st->children_num == 2)
+			end_rule_list_st = extract(end_rule_list_st, 1, "END_RULE_LIST from END_RULE_LIST");
+
+		else break;
+	}
+
+	return new MainRule(end_rule_list);
+}
+
+EndRule* Compiler::createEndRule(SyntaxTree* input_end_rule)
+{
+	SyntaxTree* identifier_st = extract(input_end_rule, 0, "IDENTIFIER from END_RULE");
+	SyntaxTree* rule_condition_st = extract(input_end_rule, 1, "INSTRUCTION_BLOCK from END_RULE");
+	SyntaxTree* payoff_list_st = extract(input_end_rule, 2, "PAYOFF_LIST from END_RULE");
+
+	std::string rule_name = identifier_st->text;
+	InstructionBlock* rule_condition = createInstructionBlock(rule_condition_st, state->getData(), NULL, VAR_TYPE::BOOL);
+
+	std::list<Payoff*> payoff_list;
+
+	while (true)
+	{
+		SyntaxTree* payoff_st = extract(payoff_list_st, 0, "PAYOFF from PAYOFF_LIST");
+		Payoff* payoff = createPayoff(payoff_st);
+		payoff_list.push_back(payoff);
+
+		if (payoff_list_st->children_num == 2)
+			payoff_list_st = extract(payoff_list_st, 1, "PAYOFF_LIST from PAYOFF_LIST");
+
+		else break;
+	}
+
+	return new EndRule(rule_name, rule_condition, payoff_list, players_set);
+}
+
+Payoff* Compiler::createPayoff(SyntaxTree* input_payoff)
+{
+	SyntaxTree* identifier_st = extract(input_payoff, 0, "IDENTIFIER from PAYOFF");
+	SyntaxTree* payoff_st = extract(input_payoff, 1, "INSTRUCTION_BLOCK from PAYOFF");
+
+	std::string player_class = identifier_st->text;
+	InstructionBlock* payoff_block = createInstructionBlock(payoff_st, state->getData(), NULL, VAR_TYPE::INT);
+
+	return new Payoff(player_class, payoff_block);
 }
 
 InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction_block, DataSet* state, DataSet* move, VAR_TYPE return_type)

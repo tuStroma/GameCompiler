@@ -12,6 +12,8 @@ private:
 public:
 	State(DataSet* data, InstructionBlock* setup);
 
+	DataSet* getData();
+
 	void setupState();
 	void print();
 };

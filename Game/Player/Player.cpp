@@ -14,9 +14,14 @@ std::string Player::getType()
 	return player_type;
 }
 
+void Player::setPayoff(int payoff)
+{
+	this->payoff = payoff;
+}
+
 void Player::print()
 {
-	std::cout << player_type << " " << player_id << '\n';
+	std::cout << player_type << " " << player_id << " payoff: " << payoff << '\n';
 }
 
 PlayersSet::PlayersSet(std::list<Player*> players)
@@ -47,9 +52,19 @@ void PlayersSet::setNextPlayer(std::string type, int id)
 	on_move = NULL;
 }
 
+void PlayersSet::setNextPlayer(Player* player)
+{
+	on_move = player;
+}
+
 Player* PlayersSet::getCurrentPlayer()
 {
 	return on_move;
+}
+
+std::list<Player*> PlayersSet::getPlayersList()
+{
+	return players;
 }
 
 void PlayersSet::print()
