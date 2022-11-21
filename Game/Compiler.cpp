@@ -164,10 +164,10 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 	Moves* moves = createMoves(moves_st);
 
 
-	state->setupState();
-	main_rule->Run();
-	state->print();
-	players_set->print();
+	//state->setupState();
+	//main_rule->Run();
+	//state->print();
+	//players_set->print();
 
 
 

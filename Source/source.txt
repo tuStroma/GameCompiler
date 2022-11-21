@@ -1,57 +1,57 @@
 PLAYERS
 [
-	player[4];
-	master[2];
+	player[2];
 ]
 
 STATE 
 [
-	INT a = 15;
-	INT b = 10;
-	INT result = 0;
-	INT pl_1 = 0;
-	INT pl_2 = 0;
+	INT a = 3;
+	INT b = 5;
+	INT c = 7;
+	
+	INT last_move = 0;
 ]
-(
-[
-	INT a = 1;
-	INT b = 2;
-]
-{
-	a = $.a;
-	b = $.b;
-	WHILE(a != b)
-	{
-		IF(a > b) {a = a-b;}
-		IF(a < b) {b = b-a;}
-	}
-	$.result = a;
-	$.pl_1 = &;
-	& = player[3];
-	$.pl_2 = &;
-})
+([]{})
 
 MAIN_RULE
 [
 	r1
-	([]{ RETURN true; }) 
+	([]
+	{ 
+		IF($.a == 0 && $.b == 0 && $.c == 0)
+		{
+			RETURN true;
+		}
+		RETURN false; 
+	}) 
 	player
-	[]{RETURN &;}
-	master
-	[INT a = 0;]{a = 2; RETURN a;}
+	[]{
+		IF($.last_move == &)
+		{
+			RETURN -1;
+		}
+		RETURN 1;
+	}
 ]
 
 MOVES
 [
-	m1<*> [ INT a = 0;] ([]{ RETURN true; })
+	m<*> [ INT stack = 0; INT amount = 0;] 
+	([]
+	{ 
+		IF(#.amount <= 0) { RETURN false; }
+		
+		IF(#.stack == 0 && #.amount <= $.a && #.amount > 0) { RETURN true; }
+		IF(#.stack == 1 && #.amount <= $.b && #.amount > 0) { RETURN true; }
+		IF(#.stack == 2 && #.amount <= $.c && #.amount > 0) { RETURN true; }
+		RETURN false; 
+	})
 	[]
 	{
-		RETURN;
-	}
-	%
-	m2<masters> [ BOOL b = false; ] ([]{ RETURN true; })
-	[INT a = 0;]
-	{
-		a = a > b || w >= 7 && 8 != a; 
+		IF(#.stack == 0 && #.amount <= $.a) { $.a = $.a - #.amount; }
+		IF(#.stack == 1 && #.amount <= $.b) { $.b = $.b - #.amount; }
+		IF(#.stack == 2 && #.amount <= $.c) { $.c = $.c - #.amount; }
+		
+		& = player[(& + 1)%2];
 	}
 ]

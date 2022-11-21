@@ -46,6 +46,9 @@ public:
 	void* getValuePtr(std::string name);
 	VAR_TYPE getValueType(std::string name);
 
+	void setInt(std::string name, int value);
+	void setBool(std::string name, bool value);
+
 
 	void print();
 

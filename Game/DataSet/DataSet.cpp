@@ -59,6 +59,38 @@ VAR_TYPE DataSet::getValueType(std::string name)
 	return map.at(name).type;
 }
 
+void DataSet::setInt(std::string name, int value)
+{
+	if (!exist(name))
+	{
+		std::cout << "Warning: Not found identifier \"" << name << "\" in scope\n";
+		return;
+	}
+	variable var = map.at(name);
+
+	if (var.type == VAR_TYPE::INT)
+		*(int*)((char*)data + var.pointer) = value;
+
+	else
+		std::cout << "Warning: Idetifier is not type INT\n";
+}
+
+void DataSet::setBool(std::string name, bool value)
+{
+	if (!exist(name))
+	{
+		std::cout << "Warning: Not found identifier \"" << name << "\" in scope\n";
+		return;
+	}
+	variable var = map.at(name);
+
+	if (var.type == VAR_TYPE::BOOL)
+		*(bool*)((char*)data + var.pointer) = value;
+
+	else
+		std::cout << "Warning: Idetifier is not type BOOL\n";
+}
+
 void DataSet::print()
 {
 	for (std::pair<const std::string, variable>& kv : map)

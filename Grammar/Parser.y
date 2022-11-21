@@ -362,7 +362,7 @@ EXPR: VAR_REFERENCE {
 	st->children[1] = $3;
 }
 | EXPR OPERATOR_LESS_EQUAL EXPR{
-	SyntaxTree* st = SyntaxTree_init(expr_greater_equal, "", 2);
+	SyntaxTree* st = SyntaxTree_init(expr_less_equal, "", 2);
 	$$ = st;
 	
 	st->children[0] = $1;

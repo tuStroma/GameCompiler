@@ -2044,7 +2044,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 364 "Parser.y"
     {
-	SyntaxTree* st = SyntaxTree_init(expr_greater_equal, "", 2);
+	SyntaxTree* st = SyntaxTree_init(expr_less_equal, "", 2);
 	(yyval.t) = st;
 	
 	st->children[0] = (yyvsp[(1) - (3)].t);
