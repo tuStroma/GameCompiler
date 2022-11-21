@@ -24,7 +24,7 @@ public:
 	void setPlayer(IPlayer* player);
 	void setPayoff(int payoff);
 
-	//std::string makeMove(DataSet* move_data, DataSet* state_data, Moves* moves);
+	std::string makeMove(DataSet* move_data, DataSet* state_data);
 
 	void print();
 };

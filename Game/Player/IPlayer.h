@@ -1,12 +1,11 @@
 #pragma once
 
 #include <string>
-
-//#include "../GameComponents/Moves.h"
+#include "../DataSet/DataSet.h"
 
 class IPlayer
 {
 public:
-	//std::string makeMove(DataSet* move_data, DataSet* state_data, Moves* moves);
+	std::string makeMove(DataSet* move_data, DataSet* state_data);
 };
 

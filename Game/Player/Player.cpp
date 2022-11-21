@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(std::string player_type, int player_id)
-	: player_type(player_type), player_id(player_id)
+	: player_type(player_type), player_id(player_id), player(NULL)
 {}
 
 int Player::getId()
@@ -24,10 +24,9 @@ void Player::setPayoff(int payoff)
 	this->payoff = payoff;
 }
 
-/*/
-std::string Player::makeMove(DataSet* move_data, DataSet* state_data, Moves* moves)
+std::string Player::makeMove(DataSet* move_data, DataSet* state_data)
 {
-	return player->makeMove(move_data, state_data, moves);
+	return player->makeMove(move_data, state_data);
 }//*/
 
 void Player::print()
