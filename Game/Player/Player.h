@@ -4,12 +4,15 @@
 #include <string>
 #include <list>
 
+#include "IPlayer.h"
+
 class Player
 {
 private:
 	std::string player_type;
 	int player_id;
 
+	IPlayer* player;
 	int payoff = 0;	// Payoff for game (to refactor)
 
 public:
@@ -18,7 +21,10 @@ public:
 	int getId();
 	std::string getType();
 
+	void setPlayer(IPlayer* player);
 	void setPayoff(int payoff);
+
+	//std::string makeMove(DataSet* move_data, DataSet* state_data, Moves* moves);
 
 	void print();
 };

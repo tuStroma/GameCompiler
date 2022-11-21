@@ -1,13 +1,8 @@
 #include "Game.h"
 
-
-Game::Game()
+Game::Game(PlayersSet* players, State* state, MainRule* main_rule, Moves* moves)
+	: players(players), state(state), main_rule(main_rule), moves(moves)
 {}
-
-void Game::setPlayers(PlayersSet * players)
-{
-	this->players = players;
-}
 
 void Game::print()
 {

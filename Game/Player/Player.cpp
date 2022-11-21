@@ -14,10 +14,21 @@ std::string Player::getType()
 	return player_type;
 }
 
+void Player::setPlayer(IPlayer* player)
+{
+	this->player = player;
+}
+
 void Player::setPayoff(int payoff)
 {
 	this->payoff = payoff;
 }
+
+/*/
+std::string Player::makeMove(DataSet* move_data, DataSet* state_data, Moves* moves)
+{
+	return player->makeMove(move_data, state_data, moves);
+}//*/
 
 void Player::print()
 {

@@ -37,6 +37,7 @@
     <ClCompile Include="Game\Instructions\Instruction\InstructionConditionalJump.cpp" />
     <ClCompile Include="Game\Instructions\Instruction\InstructionNextPlayer.cpp" />
     <ClCompile Include="Game\Instructions\Instruction\InstructionReturn.cpp" />
+    <ClCompile Include="Game\Player\IPlayer.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Grammar\Common.cpp" />
     <ClCompile Include="Grammar\Lexer.c" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Game\Instructions\Instruction\InstructionConditionalJump.h" />
     <ClInclude Include="Game\Instructions\Instruction\InstructionNextPlayer.h" />
     <ClInclude Include="Game\Instructions\Instruction\InstructionReturn.h" />
+    <ClInclude Include="Game\Player\IPlayer.h" />
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Grammar\Common.h" />
     <ClInclude Include="Grammar\Parser.tab.h" />

@@ -96,5 +96,6 @@ private:
 public:
 	// Takes as an input all syntax tree
 	Game* createGame(SyntaxTree* input_game);
+	Game* createGame(std::string source);
 };
 

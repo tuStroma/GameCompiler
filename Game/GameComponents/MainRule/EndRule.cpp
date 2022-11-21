@@ -8,7 +8,6 @@ bool EndRule::existInMap(std::string player_class)
 EndRule::EndRule(std::string rule_name, InstructionBlock* rule_condition, std::list<Payoff*> payoff_list, PlayersSet* players)
 	: rule_name(rule_name), rule_condition(rule_condition), players(players)
 {
-
 	for (Payoff* payoff : payoff_list)
 	{
 		payoff_map[payoff->getClassName()] = payoff;

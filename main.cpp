@@ -47,8 +47,10 @@ void DataSet_test()
 
 int main(int argc, char* argv[])
 {
-	parse_test();
+	//parse_test();
 	//DataSet_test();
+
+	Game* game = Compiler().createGame("Source/source.txt");
 
 	return 0;
 }

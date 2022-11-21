@@ -1,5 +1,10 @@
 #include "Compiler.h"
 
+#include "../Grammar/Common.h"
+#include "../Grammar/Parser.tab.h"
+
+extern "C" SyntaxTree * parser_main(char* file_path);
+
 // Prints warning and 
 	// returns false if 
 	// ptr == NULL
@@ -165,10 +170,22 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 	players_set->print();
 
 
-	game_object = new Game();
-	game_object->setPlayers(players_set);
+
+	game_object = new Game(players_set, state, main_rule, moves);
 
 	return game_object;
+}
+
+Game* Compiler::createGame(std::string source)
+{
+	SyntaxTree* st = parser_main(const_cast<char*>(source.c_str()));
+	SyntaxTree_print(st, 0);
+
+	std::cout << "\n\n";
+
+	Compiler compiler = Compiler();
+	
+	return compiler.createGame(st);
 }
 
 DataSet* Compiler::createDataSet(SyntaxTree* input_data_set)

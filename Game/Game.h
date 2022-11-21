@@ -11,12 +11,11 @@ class Game
 private:
 	PlayersSet* players;
 	State* state;
-
+	MainRule* main_rule;
+	Moves* moves;
 
 public:
-	Game();
-
-	void setPlayers(PlayersSet* players);
+	Game(PlayersSet* players, State* state, MainRule* main_rule, Moves* moves);
 
 	void print();
 };

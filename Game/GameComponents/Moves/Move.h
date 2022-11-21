@@ -18,5 +18,7 @@ private:
 public:
 	Move(std::string name, std::list<std::string> players_scope, DataSet* move_data, InstructionBlock* validation, InstructionBlock* move_execution);
 
+	std::string getMoveName();
+	DataSet* getMoveData();
 };
 
