@@ -33,6 +33,10 @@ public:
 
 		return "m";
 	}
+
+	void Payoff(int payoff) override {
+		std::cout << name << ": " << payoff << '\n';
+	}
 };
 
 int main(int argc, char* argv[])

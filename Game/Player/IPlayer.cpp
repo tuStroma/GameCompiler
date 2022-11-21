@@ -4,3 +4,6 @@ std::string IPlayer::makeMove(DataSet* state_data, std::unordered_map<std::strin
 {
 	return std::string();
 }
+
+void IPlayer::Payoff(int payoff)
+{}

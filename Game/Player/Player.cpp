@@ -21,6 +21,7 @@ void Player::setPlayer(IPlayer* player)
 
 void Player::setPayoff(int payoff)
 {
+	player->Payoff(payoff);
 	this->payoff = payoff;
 }
 

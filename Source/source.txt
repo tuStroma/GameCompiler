@@ -52,6 +52,8 @@ MOVES
 		IF(#.stack == 1 && #.amount <= $.b) { $.b = $.b - #.amount; }
 		IF(#.stack == 2 && #.amount <= $.c) { $.c = $.c - #.amount; }
 		
+		$.last_move = &;
+		
 		& = player[(& + 1)%2];
 	}
 ]
