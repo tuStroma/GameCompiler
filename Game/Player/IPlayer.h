@@ -6,6 +6,6 @@
 class IPlayer
 {
 public:
-	std::string makeMove(DataSet* move_data, DataSet* state_data);
+	virtual std::string makeMove(DataSet* state_data, std::unordered_map<std::string, DataSet*> moves_map);
 };
 

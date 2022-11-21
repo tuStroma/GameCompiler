@@ -24,7 +24,7 @@ public:
 	void setPlayer(IPlayer* player);
 	void setPayoff(int payoff);
 
-	std::string makeMove(DataSet* move_data, DataSet* state_data);
+	std::string makeMove(DataSet* state_data, std::unordered_map<std::string, DataSet*> moves_map);
 
 	void print();
 };
@@ -36,6 +36,8 @@ private:
 	std::list<Player*> players;
 	Player* on_move;
 
+	Player* getPlayer(std::string type, int id);
+
 public:
 	PlayersSet(std::list<Player*> players);
 
@@ -43,6 +45,10 @@ public:
 	void setNextPlayer(Player* player);
 	Player* getCurrentPlayer();
 	std::list<Player*> getPlayersList();
+
+	void setPlayer(IPlayer* i_player, std::string player_class, int player_id);
+
+	std::string makeMove(DataSet* state_data, std::unordered_map<std::string, DataSet*> moves_map);
 
 	void print();
 };

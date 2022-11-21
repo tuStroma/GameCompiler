@@ -13,3 +13,17 @@ DataSet* Move::getMoveData()
 {
 	return move_data;
 }
+
+bool Move::makeMove()
+{
+	validation->RunBlock();
+	if (validation->getReturnVariable()->getValueBool())
+	{
+		move_execution->RunBlock();
+		return true;
+	}
+
+
+	std::cout << "Execution warning: Move \"" << name << "\" is not valid\n";
+	return false;
+}

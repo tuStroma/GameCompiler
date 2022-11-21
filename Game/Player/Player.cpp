@@ -24,14 +24,24 @@ void Player::setPayoff(int payoff)
 	this->payoff = payoff;
 }
 
-std::string Player::makeMove(DataSet* move_data, DataSet* state_data)
+std::string Player::makeMove(DataSet* state_data, std::unordered_map<std::string, DataSet*> moves_map)
 {
-	return player->makeMove(move_data, state_data);
-}//*/
+	return player->makeMove(state_data, moves_map);
+}
 
 void Player::print()
 {
 	std::cout << player_type << " " << player_id << " payoff: " << payoff << '\n';
+}
+
+Player* PlayersSet::getPlayer(std::string type, int id)
+{
+	// OPTIMIZATION: add map to avoid linear searching
+	for (Player* p : players)
+		if (p->getId() == id && p->getType() == type)
+			return p;
+
+	return NULL;
 }
 
 PlayersSet::PlayersSet(std::list<Player*> players)
@@ -48,14 +58,11 @@ PlayersSet::PlayersSet(std::list<Player*> players)
 
 void PlayersSet::setNextPlayer(std::string type, int id)
 {
-	// OPTIMIZATION: add map to avoid linear searching
-	for (Player* p : players)
+	Player* player = getPlayer(type, id);
+	if (player)
 	{
-		if (p->getId() == id && p->getType() == type)
-		{
-			on_move = p;
-			return;
-		}
+		on_move = player;
+		return;
 	}
 
 	std::cout << "Execution Error: Player does not exist: " << type << '[' << id << "]\n";
@@ -75,6 +82,24 @@ Player* PlayersSet::getCurrentPlayer()
 std::list<Player*> PlayersSet::getPlayersList()
 {
 	return players;
+}
+
+void PlayersSet::setPlayer(IPlayer* i_player, std::string player_class, int player_id)
+{
+	Player* player = getPlayer(player_class, player_id);
+	if (player)
+	{
+		player->setPlayer(i_player);
+		return;
+	}
+
+	std::cout << "Execution Error: Player does not exist: " << player_class << '[' << player_id << "]\n";
+	on_move = NULL;
+}
+
+std::string PlayersSet::makeMove(DataSet* state_data, std::unordered_map<std::string, DataSet*> moves_map)
+{
+	return on_move->makeMove(state_data, moves_map);
 }
 
 void PlayersSet::print()

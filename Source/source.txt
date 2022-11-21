@@ -36,7 +36,7 @@ MAIN_RULE
 	r1
 	([]{ RETURN true; }) 
 	player
-	[]{RETURN 1;}
+	[]{RETURN &;}
 	master
 	[INT a = 0;]{a = 2; RETURN a;}
 ]

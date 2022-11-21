@@ -20,5 +20,7 @@ public:
 
 	std::string getMoveName();
 	DataSet* getMoveData();
+
+	bool makeMove();
 };
 
