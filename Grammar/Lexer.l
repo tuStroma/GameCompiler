@@ -128,6 +128,7 @@ TMP {
 	return yytext[0];
 }
 
+"//".*\n {}
 
 [ \t\n] { }
 

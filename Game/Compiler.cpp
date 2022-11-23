@@ -18,7 +18,7 @@ bool Compiler::nullCheck(SyntaxTree* ptr, std::string warning)
 	return true;
 }
 
-// Extrctors
+// Extractors
 SyntaxTree* Compiler::extract(SyntaxTree* ptr, int index, std::string warning)
 {
 	if (!nullCheck(ptr, warning))
