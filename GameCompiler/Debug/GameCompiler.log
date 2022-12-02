@@ -1,0 +1,49 @@
+﻿  Compiler.cpp
+  DataSet.cpp
+  VarType.cpp
+  Game.cpp
+  MainRule.cpp
+  EndRule.cpp
+  Payoff.cpp
+  Moves.cpp
+  Move.cpp
+  State.cpp
+  InstructionBlock.cpp
+  ExpressionBool.cpp
+  ExpressionInt.cpp
+  Instruction.cpp
+  InstructionAssign.cpp
+  InstructionConditionalJump.cpp
+  InstructionNextPlayer.cpp
+  InstructionReturn.cpp
+  IPlayer.cpp
+  Player.cpp
+  Generating Code...
+  Compiling...
+  Common.cpp
+  main.cpp
+  Generating Code...
+  Lexer.c
+  Parser.tab.c
+/Lexer.l(20,13): warning C4013: 'SyntaxTree_init' undefined; assuming extern returning int
+/Lexer.l(20,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(26,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(32,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(38,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(45,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(51,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(57,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(63,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(69,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(89,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(96,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(103,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(111,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(119,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Lexer.l(126,11): warning C4047: '=': 'SyntaxTree *' differs in levels of indirection from 'int'
+/Parser.tab.c(309,7): warning C4273: 'malloc': inconsistent dll linkage
+/Parser.tab.c(316,6): warning C4273: 'free': inconsistent dll linkage
+/Parser.y(577,20): warning C4013: 'strlen' undefined; assuming extern returning int
+/Parser.y(578,2): warning C4013: 'strcpy_s' undefined; assuming extern returning int
+  Generating Code...
+  GameCompiler.vcxproj -> C:\Jakub\StudiaInf\Inzynierka\GameCompiler\Debug\GameCompiler.exe

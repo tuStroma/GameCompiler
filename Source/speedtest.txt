@@ -1,0 +1,55 @@
+PLAYERS
+[
+	player[0];
+]
+
+STATE 
+[
+	INT limit = 100000;
+	INT result = 0;
+]
+(
+[
+	INT i = 2; 
+	INT j = 0; 
+	INT sum = 0;
+	BOOL prime = false;
+]
+{
+	WHILE( i <= $.limit)
+	{
+		prime = true;
+		j = 2;
+		WHILE( j*j <= i )
+		{
+			IF( i%j == 0)
+			{
+				prime = false;
+				j = i;
+			}
+			j = j + 1;
+		}
+		IF(prime)
+		{
+			sum = sum + i;
+		}
+		
+		i = i + 1;
+	}
+	$.result = sum;
+})
+
+MAIN_RULE
+[
+	r1
+	([]{ RETURN false; }) 
+	player
+	[]{ RETURN 1; }
+]
+
+MOVES
+[
+	m<*> [ INT stack = 0; INT amount = 0;]
+	([]{ RETURN false; })
+	[]{}
+]

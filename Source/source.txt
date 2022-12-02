@@ -41,9 +41,9 @@ MOVES
 	{ 
 		IF(#.amount <= 0) { RETURN false; }
 		
-		IF(#.stack == 0 && #.amount <= $.a && #.amount > 0) { RETURN true; } // Comment
-		IF(#.stack == 1 && #.amount <= $.b && #.amount > 0) { RETURN true; }
-		IF(#.stack == 2 && #.amount <= $.c && #.amount > 0) { RETURN true; }
+		IF(#.stack == 0 && #.amount <= $.a) { RETURN true; } // Comment
+		IF(#.stack == 1 && #.amount <= $.b) { RETURN true; }
+		IF(#.stack == 2 && #.amount <= $.c) { RETURN true; }
 		RETURN false; 
 	})
 	[]

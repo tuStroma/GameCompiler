@@ -179,9 +179,8 @@ Game* Compiler::createGame(SyntaxTree* input_game)
 Game* Compiler::createGame(std::string source)
 {
 	SyntaxTree* st = parser_main(const_cast<char*>(source.c_str()));
-	SyntaxTree_print(st, 0);
-
-	std::cout << "\n\n";
+	//SyntaxTree_print(st, 0);
+	//std::cout << "\n\n";
 
 	Compiler compiler = Compiler();
 	
@@ -407,7 +406,7 @@ InstructionBlock* Compiler::createInstructionBlock(SyntaxTree* input_instruction
 	SyntaxTree* instruction_list = extract(input_instruction_block, 1, "INSTRUCTION_LIST from INSTRUCTION_BLOCK");	// REFACTOR
 
 	// Create local DataSet
-	DataSet* local = createDataSet(local_data);
+	DataSet* local = createDataSet(local_data); // Memory leak
 
 	InstructionBlock* instruction_block = new InstructionBlock(NULL, return_type);
 
