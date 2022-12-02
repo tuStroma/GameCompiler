@@ -1,0 +1,162 @@
+PLAYERS
+[
+	owca[1];
+	wilki[1];
+]
+
+STATE 
+[
+	INT o_x = 3;
+	INT o_y = 7;
+	
+	INT w0_x = 0;
+	INT w0_y = 0;
+	INT w1_x = 2;
+	INT w1_y = 0;
+	INT w2_x = 4;
+	INT w2_y = 0;
+	INT w3_x = 6;
+	INT w3_y = 0;
+]
+([]{})
+
+MAIN_RULE
+[
+	o
+	([]
+	{ 
+		IF($.o_y == 0)
+		{
+			RETURN true;
+		}
+		RETURN false; 
+	}) 
+	owca
+	[]{ RETURN 1; }
+	wilki
+	[]{ RETURN -1; }
+	
+	%
+	
+	w
+	([
+		INT move_x = 0;
+		INT move_y = 0;
+	]
+	{ 
+		move_x = $.o_x - 1;
+		move_y = $.o_y - 1;
+		IF ( 	move_x >= 0 && move_y >= 0 &&
+				(move_x != $.w0_x || move_y != $.w0_y) &&
+				(move_x != $.w1_x || move_y != $.w1_y) &&
+				(move_x != $.w2_x || move_y != $.w2_y) &&
+				(move_x != $.w3_x || move_y != $.w3_y))
+		{ RETURN false; }
+		
+		move_x = $.o_x - 1;
+		move_y = $.o_y + 1;
+		IF ( 	move_x >= 0 && move_y <= 7 &&
+				(move_x != $.w0_x || move_y != $.w0_y) &&
+				(move_x != $.w1_x || move_y != $.w1_y) &&
+				(move_x != $.w2_x || move_y != $.w2_y) &&
+				(move_x != $.w3_x || move_y != $.w3_y))
+		{ RETURN false; }
+		
+		move_x = $.o_x + 1;
+		move_y = $.o_y - 1;
+		IF ( 	move_x <= 7 && move_y >= 0 &&
+				(move_x != $.w0_x || move_y != $.w0_y) &&
+				(move_x != $.w1_x || move_y != $.w1_y) &&
+				(move_x != $.w2_x || move_y != $.w2_y) &&
+				(move_x != $.w3_x || move_y != $.w3_y))
+		{ RETURN false; }
+		
+		move_x = $.o_x + 1;
+		move_y = $.o_y + 1;
+		IF ( 	move_x <= 7 && move_y <= 7 &&
+				(move_x != $.w0_x || move_y != $.w0_y) &&
+				(move_x != $.w1_x || move_y != $.w1_y) &&
+				(move_x != $.w2_x || move_y != $.w2_y) &&
+				(move_x != $.w3_x || move_y != $.w3_y))
+		{ RETURN false; }
+		
+		RETURN true;
+	}) 
+	owca
+	[]{ RETURN -1; }
+	wilki
+	[]{ RETURN 1; }
+]
+
+MOVES
+[
+	owca<owca> 
+	[
+		INT move_x = 0;
+		INT move_y = 0;
+	] 
+	([ INT d_x = 0; INT d_y = 0;]
+	{ 
+		d_x = $.o_x - #.move_x;
+		d_y = $.o_y - #.move_y;
+		
+		IF((d_x != 1 && d_x != -1) || (d_y != 1 && d_y != -1)) { RETURN false;}
+		
+		IF ( 	(#.move_x == $.w0_x && #.move_y == $.w0_y) ||
+				(#.move_x == $.w1_x && #.move_y == $.w1_y) ||
+				(#.move_x == $.w2_x && #.move_y == $.w2_y) ||
+				(#.move_x == $.w3_x && #.move_y == $.w3_y))
+		{ RETURN false; }
+		
+		RETURN true;
+	})
+	[]
+	{
+		$.o_x = #.move_x;
+		$.o_y = #.move_y;
+		
+		& = wilki[0];
+	}
+	
+	%
+	
+	wilki<wilki> 
+	[
+		INT wilk_indeks = 0;
+		INT move_x = 0;
+		INT move_y = 0;
+	] 
+	([ INT wilk_x = 0; INT wilk_y = 0;
+	INT d_x = 0; INT d_y = 0;]
+	{		
+		IF (#.wilk_indeks < 0 || #.wilk_indeks > 3) { RETURN false; }
+
+		IF (#.wilk_indeks == 0) { wilk_x = $.w0_x; wilk_y = $.w0_y; }
+		IF (#.wilk_indeks == 1) { wilk_x = $.w1_x; wilk_y = $.w1_y; }
+		IF (#.wilk_indeks == 2) { wilk_x = $.w2_x; wilk_y = $.w2_y; }
+		IF (#.wilk_indeks == 3) { wilk_x = $.w3_x; wilk_y = $.w3_y; }
+		
+		IF (#.move_y != wilk_y + 1) { RETURN false; }
+		IF (#.move_x != wilk_x + 1 && #.move_x != wilk_x - 1) { RETURN false; }
+		
+		IF (#.move_x > 7) { RETURN false; }
+		IF (#.move_y > 7 || #.move_y < 0) { RETURN false; }
+		
+		IF (#.move_x == $.o_x && #.move_y == $.o_y) { RETURN false; }
+		IF (#.move_x == $.w0_x && #.move_y == $.w0_y) { RETURN false; }
+		IF (#.move_x == $.w1_x && #.move_y == $.w1_y) { RETURN false; }
+		IF (#.move_x == $.w2_x && #.move_y == $.w2_y) { RETURN false; }
+		IF (#.move_x == $.w3_x && #.move_y == $.w3_y) { RETURN false; }
+		
+		RETURN true;
+	})
+	[]
+	{
+		IF (#.wilk_indeks == 0) { $.w0_x = #.move_x; $.w0_y = #.move_y; }
+		IF (#.wilk_indeks == 1) { $.w1_x = #.move_x; $.w1_y = #.move_y; }
+		IF (#.wilk_indeks == 2) { $.w2_x = #.move_x; $.w2_y = #.move_y; }
+		IF (#.wilk_indeks == 3) { $.w3_x = #.move_x; $.w3_y = #.move_y; }
+		
+		& = owca[0];
+	}
+]

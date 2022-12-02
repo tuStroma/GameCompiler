@@ -30,7 +30,7 @@ void Game::nextMove()
 	while (true)
 	{
 		std::string move_name = players->makeMove(state_data, moves_map);
-		if (moves->makeMove(move_name))	// Break if valid mowe was executed
+		if (moves->makeMove(move_name))	// Break if valid move was executed
 			break;
 	}
 
